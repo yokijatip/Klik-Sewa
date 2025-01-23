@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="soft_gray">#f3f3f3</color>
+    <color name="dark_gray">#686868</color>
+    <color name="gray">#edefee</color>
+    <color name="primary_black">#292c31</color>
+
+    <!--  Common Color  -->
+    <color name="red">#FF3830</color>
+    <color name="orange">#FF9501</color>
+    <color name="yellow">#FFCC00</color>
+    <color name="green">#34C85A</color>
+    <color name="sky">#5AC8FB</color>
+    <color name="blue">#007AFF</color>
+    <color name="purple">#5855D6</color>
+    <color name="violet">#AF52DE</color>
+    <color name="pink">#FF2C55</color>
+</resources>
