@@ -1,9 +1,10 @@
 package com.gity.kliksewa.helper
 
-import android.R
 import android.content.Context
 import android.view.View
 import android.widget.Toast
+import com.gity.kliksewa.R
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
 object CommonUtils {
@@ -59,7 +60,6 @@ object CommonUtils {
             message = errorMessage,
             duration = Snackbar.LENGTH_LONG,
             actionText = actionText,
-            actionColor = R.color.holo_red_light,
             onActionClick = onRetry
         )
     }
@@ -74,16 +74,34 @@ object CommonUtils {
             message = successMessage,
             duration = Snackbar.LENGTH_SHORT,
             actionText = "OK",
-            actionColor = R.color.holo_green_dark
         )
     }
 
-//    Show Loading
+    //    Show Loading
     fun showLoading(isLoading: Boolean, view: View) {
         if (isLoading) {
             view.visibility = View.VISIBLE
         } else {
             view.visibility = View.GONE
         }
+    }
+
+    //    Material Alert Dialog Builder
+    fun materialAlertDialog(
+        message: String,
+        title: String,
+        context: Context,
+        onPositiveClick: () -> Unit,
+    ) {
+        MaterialAlertDialogBuilder(context, R.style.CustomAlertDialogTheme)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Ya") { _, _ ->
+                onPositiveClick()
+            }
+            .setNegativeButton("Tidak") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

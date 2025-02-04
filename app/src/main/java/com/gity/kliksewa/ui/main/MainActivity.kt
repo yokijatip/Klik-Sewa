@@ -12,7 +12,9 @@ import com.gity.kliksewa.ui.main.explore.ExploreFragment
 import com.gity.kliksewa.ui.main.favorite.FavoriteFragment
 import com.gity.kliksewa.ui.main.home.HomeFragment
 import com.gity.kliksewa.ui.main.user.UserFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding

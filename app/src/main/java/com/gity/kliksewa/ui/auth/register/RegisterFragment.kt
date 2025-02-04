@@ -2,16 +2,19 @@ package com.gity.kliksewa.ui.auth.register
 
 import android.os.Bundle
 import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.gity.kliksewa.R
 import com.gity.kliksewa.databinding.FragmentRegisterBinding
-import com.gity.kliksewa.ui.auth.AuthActivity
-import com.gity.kliksewa.ui.auth.login.LoginFragment
 import com.gity.kliksewa.helper.CommonUtils
+import com.gity.kliksewa.ui.auth.AuthActivity
 import com.gity.kliksewa.ui.auth.AuthViewModel
+import com.gity.kliksewa.ui.auth.login.LoginFragment
 import com.gity.kliksewa.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,6 +37,7 @@ class RegisterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupClickListener()
         observeViewModel()
+        setupUserTypeDropdown()
     }
 
     private fun setupClickListener() {
@@ -42,14 +46,27 @@ class RegisterFragment : Fragment() {
                 val email = edtEmail.text.toString()
                 val password = edtPassword.text.toString()
                 val confirmPassword = edtConfirmationPassword.text.toString()
+                val fullName = binding.edtFullname.text.toString()
+                val phoneNumber = binding.edtPhone.text.toString()
+                val userType = binding.edtUserType.text.toString()
 
-                if (validateInput(email, password, confirmPassword)) {
-                    sharedViewModel.register(email = email, password = password)
+                if (validateInput(
+                        email,
+                        password,
+                        confirmPassword,
+                        userType,
+                        fullName,
+                        phoneNumber,
+                    )
+                ) {
+                    sharedViewModel.register(
+                        role = userType,
+                        fullName = fullName,
+                        phoneNumber = phoneNumber,
+                        email = email,
+                        password = password
+                    )
                 }
-            }
-
-            btnBack.setOnClickListener {
-                (activity as? AuthActivity)?.replaceFragment(LoginFragment())
             }
 
             tvSignIn.setOnClickListener {
@@ -71,6 +88,7 @@ class RegisterFragment : Fragment() {
                     CommonUtils.showLoading(false, binding.progressBar)
                     CommonUtils.showErrorSnackBar(binding.root, result.message ?: "Register failed")
                 }
+
                 is Resource.Success -> {
                     binding.btnSignUp.isEnabled = true
                     CommonUtils.showLoading(false, binding.progressBar)
@@ -81,10 +99,27 @@ class RegisterFragment : Fragment() {
         }
     }
 
+    private fun setupUserTypeDropdown() {
+        val userTypes = listOf("Renter", "Owner")
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.list_item_dropdown,
+            userTypes
+        )
+        (binding.edtUserType as? AutoCompleteTextView)?.setAdapter(adapter)
+
+        binding.edtUserType.setOnItemClickListener { _, _, position, _ ->
+            binding.edtUserType.setText(userTypes[position], false)
+        }
+    }
+
     private fun validateInput(
         email: String,
         password: String,
-        confirmPassword: String
+        confirmPassword: String,
+        userType: String,
+        fullName: String,
+        phoneNumber: String,
     ): Boolean {
         when {
             email.isEmpty() -> {
@@ -102,6 +137,16 @@ class RegisterFragment : Fragment() {
                 return false
             }
 
+            fullName.isEmpty() -> {
+                CommonUtils.showSnackBar(binding.root, "Nama lengkap harus diisi")
+                return false
+            }
+
+            phoneNumber.isEmpty() -> {
+                CommonUtils.showSnackBar(binding.root, "Nomor telepon harus diisi")
+                return false
+            }
+
             !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
                 CommonUtils.showSnackBar(binding.root, "Format email tidak valid")
                 return false
@@ -113,7 +158,15 @@ class RegisterFragment : Fragment() {
             }
 
             password != confirmPassword -> {
-                CommonUtils.showSnackBar(binding.root, "Password dan konfirmasi password tidak sama")
+                CommonUtils.showSnackBar(
+                    binding.root,
+                    "Password dan konfirmasi password tidak sama"
+                )
+                return false
+            }
+
+            userType.isEmpty() -> {
+                CommonUtils.showSnackBar(binding.root, "Pilih tipe pengguna")
                 return false
             }
 

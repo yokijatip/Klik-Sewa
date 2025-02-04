@@ -5,8 +5,7 @@
     android:id="@+id/login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    tools:context=".presentation.auth.AuthActivity">
+    android:background="@color/black">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -42,22 +41,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_icon_app"
-        app:shapeAppearanceOverlay="@style/TopRoundCard">
+        app:shapeAppearanceOverlay="@style/TopRoundCardStart">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:fontFamily="@font/opensans_semi_bold"
                 android:text="@string/login"
-                android:textAlignment="center"
+                android:textAlignment="textEnd"
                 android:textColor="@color/black"
                 android:textSize="30sp" />
 
@@ -130,16 +127,12 @@
                 android:backgroundTint="@color/black"
                 android:fontFamily="@font/opensans_medium"
                 android:text="@string/login"
-                app:cornerRadius="12dp"
+                app:cornerRadius="16dp"
                 app:textAllCaps="false" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
 
             <LinearLayout
                 android:id="@+id/tv_sign_up"
+                android:layout_marginTop="32dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

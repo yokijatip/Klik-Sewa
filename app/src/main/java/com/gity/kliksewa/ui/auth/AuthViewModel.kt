@@ -28,10 +28,10 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun register(email: String, password: String) {
+    fun register(role: String, fullName: String, phoneNumber: String, email: String, password: String) {
         viewModelScope.launch {
             _registerResult.value = Resource.Loading()
-            _registerResult.value = authRepository.register(email, password)
+            _registerResult.value = authRepository.register(role, fullName, phoneNumber, email, password)
         }
     }
 }

@@ -23,7 +23,13 @@ class FirebaseAuthSource {
         }
     }
 
-    suspend fun register(email: String, password: String): Result<UserModel> {
+    suspend fun register(
+        role: String,
+        fullName: String,
+        phoneNumber: String,
+        email: String,
+        password: String
+    ): Result<UserModel> {
         return try {
             val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
             val user = authResult.user
@@ -31,12 +37,24 @@ class FirebaseAuthSource {
                 val newUser = UserModel(
                     id = it.uid,
                     email = email,
-                    fullName = "",
-                    phoneNumber = ""
+                    role,
+                    fullName = fullName,
+                    phoneNumber = phoneNumber,
+                    profileImageUrl = ""
                 )
                 firestore.collection("users").document(it.uid).set(newUser).await()
                 Result.success(newUser)
             } ?: Result.failure(Exception("Registration failed"))
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun logout(): Result<Boolean> {
+        return try {
+            // Panggil fungsi signOut() dari FirebaseAuth
+            firebaseAuth.signOut()
+            Result.success(true)
         } catch (e: Exception) {
             Result.failure(e)
         }
