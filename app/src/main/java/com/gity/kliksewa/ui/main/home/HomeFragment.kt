@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
+import com.gity.kliksewa.R
 import com.gity.kliksewa.databinding.FragmentHomeBinding
 
+@Suppress("DEPRECATION")
 class HomeFragment : Fragment() {
 
 
@@ -23,7 +27,20 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupNotificationBar()
+    }
 
+    private fun setupNotificationBar() {
+        // Make status bar black
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.black)
+
+        // Make status bar icons white using WindowCompat
+        WindowCompat.getInsetsController(
+            requireActivity().window,
+            requireActivity().window.decorView
+        ).apply {
+            isAppearanceLightStatusBars = false  // false untuk ikon putih, true untuk ikon hitam
+        }
     }
 
     override fun onDestroyView() {

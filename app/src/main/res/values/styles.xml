@@ -35,6 +35,13 @@
         <item name="cornerSizeBottomRight">16dp</item>
     </style>
 
+    <style name="BottomRoundCard20dp" parent="Widget.MaterialComponents.CardView">
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">20dp</item>
+        <item name="cornerSizeBottomRight">20dp</item>
+    </style>
+
     <style name="TopRoundCardStartEnd" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerSizeTopLeft">32dp</item>
         <item name="cornerSizeTopRight">32dp</item>

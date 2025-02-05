@@ -31,4 +31,6 @@
     <string name="bottom_navigation_menu_favorite">Favorite</string>
     <string name="bottom_navigation_menu_user">User</string>
 
+    <!--  Home Fragment  -->
+    <string name="search">Search</string>
 </resources>

@@ -62,5 +62,12 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <!-- Notification Bar -->
+    <style name="Theme.YourAppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Other theme attributes -->
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+
     <style name="Theme.KlikSewa" parent="Base.Theme.KlikSewa" />
 </resources>
