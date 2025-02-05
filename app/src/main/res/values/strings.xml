@@ -33,4 +33,37 @@
 
     <!--  Home Fragment  -->
     <string name="search">Search</string>
+
+    <!-- Category Product Text -->
+    <string name="car">Car</string>
+    <string name="camera">Camera</string>
+    <string name="electronic">Electronic</string>
+    <string name="other">Other</string>
+    <string name="building">Building</string>
+    <string name="clothes">Clothes</string>
+    <string name="hobbies">Hobbies</string>
+
+    <string-array name="category_product_text">
+        <item>@string/car</item>
+        <item>@string/camera</item>
+        <item>@string/electronic</item>
+        <item>@string/other</item>
+        <item>@string/building</item>
+        <item>@string/clothes</item>
+        <item>@string/hobbies</item>
+    </string-array>
+
+    <!--  Category Product Image  -->
+    <string-array name="category_product_image">
+        <item>@drawable/ic_car</item>
+        <item>@drawable/ic_camera</item>
+        <item>@drawable/ic_modern_tv</item>
+        <item>@drawable/ic_drawer</item>
+        <item>@drawable/ic_building</item>
+        <item>@drawable/ic_shirt</item>
+        <item>@drawable/ic_people_tag</item>
+    </string-array>
+
+    <!--  Category Product Image  -->
+
 </resources>

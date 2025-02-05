@@ -94,6 +94,9 @@ dependencies {
     // When using the BoM, don't specify versions in Firebase dependencies
     implementation("com.google.firebase:firebase-analytics")
 
+    // Image Auto Slider
+    implementation ("com.github.denzcoskun:ImageSlideshow:0.1.2")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
