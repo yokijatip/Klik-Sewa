@@ -3,6 +3,7 @@ package com.gity.kliksewa
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.firebase.FirebaseApp
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -13,6 +14,7 @@ class KlikSewaApp: Application() {
         Timber.plant(Timber.DebugTree())
         ChuckerInterceptor.Builder(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        FirebaseApp.initializeApp(this)
     }
 
 }

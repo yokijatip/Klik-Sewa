@@ -33,6 +33,7 @@
 
     <!--  Home Fragment  -->
     <string name="search">Search</string>
+    <string name="recommend_for_you">Recommended For You</string>
 
     <!-- Category Product Text -->
     <string name="car">Car</string>
@@ -64,6 +65,52 @@
         <item>@drawable/ic_people_tag</item>
     </string-array>
 
-    <!--  Category Product Image  -->
+    <string name="storage_product">Product\nStorage</string>
+    <string name="add_product">Add\nProduct</string>
+    <string name="add_product_no_enter">Add Product</string>
+
+    <!--  Owner Menu Text  -->
+    <string-array name="owner_menu_text">
+        <item>@string/storage_product</item>
+        <item>@string/add_product</item>
+    </string-array>
+
+    <!--  Owner Menu Image  -->
+    <string-array name="owner_menu_image">
+        <item>@drawable/ic_garage</item>
+        <item>@drawable/ic_grid_plus</item>
+    </string-array>
+
+    <string name="notification">Notification</string>
+    <string name="change_password">Change Password</string>
+    <string name="logout">Logout</string>
+    <string name="about">About</string>
+
+    <string-array name="settings_menu_text">
+        <item>@string/notification</item>
+        <item>@string/change_password</item>
+        <item>@string/about</item>
+        <item>@string/logout</item>
+    </string-array>
+
+    <string-array name="settings_menu_image">
+        <item>@drawable/ic_bell</item>
+        <item>@drawable/ic_lock</item>
+        <item>@drawable/ic_warning_circle</item>
+        <item>@drawable/ic_log_out</item>
+    </string-array>
+
+    <string name="product_details">Product Details</string>
+    <string name="product_price">Product Price</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_description">Description</string>
+    <string name="product_address">Address</string>
+    <string name="product_categories">Categories</string>
+    <string name="product_images">Images</string>
+    <string name="product_unit_price">Unit Price</string>
+    <string name="product_price_per_hour">Price Per Hour</string>
+    <string name="product_price_per_day">Price Per Day</string>
+    <string name="product_price_per_week">Price Per Week</string>
+    <string name="product_price_per_month">Price Per Month</string>
 
 </resources>

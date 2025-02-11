@@ -89,13 +89,20 @@ dependencies {
     implementation ("com.github.ismaeldivita:chip-navigation-bar:1.4.0")
 
     // Import the Firebase BoM
+    //noinspection UseTomlInstead
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
 
     // When using the BoM, don't specify versions in Firebase dependencies
+    //noinspection UseTomlInstead
     implementation("com.google.firebase:firebase-analytics")
 
     // Image Auto Slider
+    //noinspection UseTomlInstead
     implementation ("com.github.denzcoskun:ImageSlideshow:0.1.2")
+
+    // Circle Image
+    //noinspection UseTomlInstead
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 
 
     implementation(libs.androidx.core.ktx)

@@ -9,13 +9,22 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.interfaces.ItemClickListener
+import com.denzcoskun.imageslider.models.SlideModel
 import com.gity.kliksewa.R
+import com.gity.kliksewa.data.model.BannerModel
 import com.gity.kliksewa.data.model.ProductCategoryModel
 import com.gity.kliksewa.databinding.FragmentHomeBinding
 import com.gity.kliksewa.helper.CommonUtils
 import com.gity.kliksewa.ui.main.home.adapter.ProductCategoryAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @Suppress("DEPRECATION")
 @AndroidEntryPoint
@@ -26,6 +35,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var categoryAdapter: ProductCategoryAdapter
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,8 +49,11 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupNotificationBar()
         setupListener()
-
         setupRecyclerViewProductCategory()
+        setupBannerObserver()
+
+        // Load Banners
+        viewModel.loadBanners()
     }
 
     private fun setupNotificationBar() {
@@ -108,6 +121,60 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun setupBannerObserver() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Observer Banner
+                launch {
+                    viewModel.banners.collect { banners ->
+                        if (banners.isNotEmpty()) {  // Changed from isEmpty to isNotEmpty
+                            setupImageSlider(banners)
+                        }
+                    }
+                }
+
+                // Observe loading
+                launch {
+                    viewModel.isLoading.collect {
+                        // TODO Pake loading disini
+                    }
+                }
+
+                // Observe errors
+                launch {
+                    viewModel.error.collect { errorMessage ->
+                        errorMessage?.let {
+                            CommonUtils.showSnackBar(binding.root, it)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setupImageSlider(banners: List<BannerModel>) {
+        val slideModels = banners.map { banner ->
+            SlideModel(
+                imageUrl = banner.imageUrl,
+                scaleType = ScaleTypes.CENTER_CROP
+            )
+        }
+
+        binding.ivBannerSlider.setImageList(slideModels)
+
+        binding.ivBannerSlider.setItemClickListener(object : ItemClickListener {
+            override fun doubleClick(position: Int) {
+                // Handle double click if needed
+            }
+
+            override fun onItemSelected(position: Int) {
+                CommonUtils.showSnackBar(
+                    binding.root,
+                    "Banner clicked: ${banners[position].name}"
+                )
+            }
+        })
+    }
 
 
     override fun onDestroyView() {
