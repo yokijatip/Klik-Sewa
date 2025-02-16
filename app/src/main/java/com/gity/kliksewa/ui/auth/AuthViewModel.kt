@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gity.kliksewa.data.model.UserModel
-import com.gity.kliksewa.data.repository.AuthRepository
+import com.gity.kliksewa.data.repository.AuthRepositoryImpl
 import com.gity.kliksewa.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepositoryImpl: AuthRepositoryImpl
 ): ViewModel() {
     private val _loginResult = MutableLiveData<Resource<UserModel>>()
     val loginResult: LiveData<Resource<UserModel>> = _loginResult
@@ -24,14 +24,14 @@ class AuthViewModel @Inject constructor(
     fun login(email: String, password: String) {
         viewModelScope.launch {
             _loginResult.value = Resource.Loading()
-            _loginResult.value = authRepository.login(email, password)
+            _loginResult.value = authRepositoryImpl.login(email, password)
         }
     }
 
     fun register(role: String, fullName: String, phoneNumber: String, email: String, password: String) {
         viewModelScope.launch {
             _registerResult.value = Resource.Loading()
-            _registerResult.value = authRepository.register(role, fullName, phoneNumber, email, password)
+            _registerResult.value = authRepositoryImpl.register(role, fullName, phoneNumber, email, password)
         }
     }
 }

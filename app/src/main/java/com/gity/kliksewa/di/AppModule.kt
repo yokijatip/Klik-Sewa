@@ -1,6 +1,9 @@
 package com.gity.kliksewa.di
 
-import com.gity.kliksewa.data.repository.AuthRepository
+import android.app.Application
+import android.content.Context
+import com.cloudinary.Cloudinary
+import com.gity.kliksewa.data.repository.AuthRepositoryImpl
 import com.gity.kliksewa.data.source.remote.FirebaseAuthSource
 import dagger.Module
 import dagger.Provides
@@ -19,7 +22,23 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(firebaseAuthSource: FirebaseAuthSource): AuthRepository {
-        return AuthRepository(firebaseAuthSource)
+    fun provideContext(application: Application): Context {
+        return application.applicationContext
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(firebaseAuthSource: FirebaseAuthSource): AuthRepositoryImpl {
+        return AuthRepositoryImpl(firebaseAuthSource)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCloudinary(): Cloudinary {
+        val cloudName = "dhqpsn90p"
+        val apiKey = "219489315573247"
+        val apiSecret = "UsXscbAhfTZPJm1RraNbpDFv9ng"
+        val cloudinaryUrl = "cloudinary://$apiKey:$apiSecret@$cloudName"
+        return Cloudinary(cloudinaryUrl)
     }
 }

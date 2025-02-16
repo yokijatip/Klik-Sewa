@@ -27,6 +27,7 @@ roomRuntime = "2.6.1"
 timber = "5.0.1"
 firebaseAuthKtx = "23.1.0"
 firebaseFirestoreKtx = "25.1.1"
+firebaseConfigKtx = "22.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -54,6 +55,7 @@ room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCom
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+firebase-config-ktx = { group = "com.google.firebase", name = "firebase-config-ktx", version.ref = "firebaseConfigKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

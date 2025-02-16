@@ -12,19 +12,19 @@ import javax.inject.Singleton
 class BannerRemoteSource @Inject constructor(
     private val firestore: FirebaseFirestore
 ) {
-    suspend fun getBanners(): Result<List<BannerModel>> = withContext(Dispatchers.IO) {
+    suspend fun getBanners(): List<BannerModel> = withContext(Dispatchers.IO) {
         try {
-            val banners = mutableListOf<BannerModel>()
+            // Ambil data dari Firestore
             val querySnapshot = firestore.collection("banner").get().await()
 
-            for (document in querySnapshot.documents) {
-                document.toObject(BannerModel::class.java)?.let { banner ->
-                    banners.add(banner)
-                }
+            // Konversi data ke List<BannerModel>
+            querySnapshot.documents.mapNotNull { document ->
+                document.toObject(BannerModel::class.java)
             }
-            Result.success(banners)
         } catch (e: Exception) {
-            Result.failure(e)
+            // Jika terjadi error, kembalikan daftar kosong
+            e.printStackTrace()
+            emptyList()
         }
     }
 }

@@ -1,11 +1,13 @@
 package com.gity.kliksewa.helper
 
 import android.content.Context
+import android.net.Uri
 import android.view.View
 import android.widget.Toast
 import com.gity.kliksewa.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import java.io.File
 
 object CommonUtils {
     fun showMessages(message: String, context: Context) {
@@ -104,4 +106,42 @@ object CommonUtils {
             }
             .show()
     }
+
+    // Content Resolver
+     fun uriToFile(context: Context, uri: Uri): File {
+        val contentResolver = context.contentResolver
+        val inputStream = contentResolver.openInputStream(uri)
+        val tempFile = File.createTempFile("temp_image", null, context.cacheDir)
+        inputStream.use { input ->
+            tempFile.outputStream().use { output ->
+                input?.copyTo(output)
+            }
+        }
+        return tempFile
+    }
+
+    fun getFormattedPrice(
+        pricePerHour: Double?,
+        pricePerDay: Double?,
+        pricePerWeek: Double?,
+        pricePerMonth: Double?
+    ): String {
+        // Urutan prioritas: day > hour > week > month
+        val selectedPrice = when {
+            pricePerDay != null -> Pair(pricePerDay, "Per Day")
+            pricePerHour != null -> Pair(pricePerHour, "Per Hour")
+            pricePerWeek != null -> Pair(pricePerWeek, "Per Week")
+            pricePerMonth != null -> Pair(pricePerMonth, "Per Month")
+            else -> null
+        }
+
+        return if (selectedPrice != null) {
+            val (price, type) = selectedPrice
+            "Rp${String.format("%,.0f", price)} / $type"
+        } else {
+            "Harga tidak tersedia"
+        }
+    }
+
+
 }

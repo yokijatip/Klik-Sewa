@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -204,8 +204,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:clipChildren="true"
-            android:clipToPadding="true"
+            android:orientation="horizontal"
+            android:overScrollMode="never"
+            android:clipToPadding="false"
             android:paddingHorizontal="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -232,39 +233,47 @@
                 android:layout_height="match_parent"
                 app:iss_auto_cycle="true"
                 app:iss_no_dots="true"
-                app:iss_period="3000" />
+                app:iss_period="6000" />
         </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
+            app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+            app:layout_constraintVertical_bias="0.0">
 
             <TextView
+                android:id="@+id/tv_recommended_for_you"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/opensans_semi_bold"
-                android:text="@string/recommend_for_you"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:fontFamily="@font/opensans_semi_bold"
+                android:text="@string/recommend_for_you"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_recommended_products"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="16dp"
+                android:layout_height="400dp"
                 android:layout_marginTop="12dp"
+                android:clipToPadding="false"
+                android:orientation="horizontal"
+                android:overScrollMode="never"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:scrollbars="none"
                 tools:itemCount="1"
                 tools:listitem="@layout/list_recommend_product" />
-
 
         </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+</ScrollView>

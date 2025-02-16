@@ -5,7 +5,7 @@ import com.gity.kliksewa.data.source.remote.FirebaseAuthSource
 import com.gity.kliksewa.util.Resource
 import javax.inject.Inject
 
-class AuthRepository @Inject constructor(private val firebaseAuthSource: FirebaseAuthSource) {
+class AuthRepositoryImpl @Inject constructor(private val firebaseAuthSource: FirebaseAuthSource) {
     suspend fun login(email: String, password: String): Resource<UserModel> {
         return try {
             val result = firebaseAuthSource.login(email, password)

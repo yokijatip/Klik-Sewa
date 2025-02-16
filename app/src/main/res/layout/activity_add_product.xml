@@ -19,7 +19,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
             android:backgroundTint="@android:color/transparent"
             app:strokeWidth="0dp">
 
@@ -43,6 +42,7 @@
             android:textSize="18sp" />
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btn_pick_images"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginHorizontal="16dp"
@@ -193,11 +193,12 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp">
 
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            <AutoCompleteTextView
                 android:id="@+id/dropdown_product_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none" />
+                android:inputType="none"
+                android:maxLines="1"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -361,13 +362,13 @@
             android:layout_width="match_parent"
             android:layout_height="62dp"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="32dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="32dp"
             android:backgroundTint="@color/black"
             android:fontFamily="@font/opensans_medium"
             android:text="@string/add_product_no_enter"
-            app:cornerRadius="16dp"
+            app:cornerRadius="12dp"
             app:textAllCaps="false" />
-
 
     </LinearLayout>
 

@@ -78,15 +78,15 @@ class RegisterFragment : Fragment() {
     private fun observeViewModel() {
         sharedViewModel.registerResult.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is Resource.Loading -> {
-                    binding.btnSignUp.isEnabled = false
-                    CommonUtils.showLoading(true, binding.progressBar)
-                }
-
                 is Resource.Error -> {
                     binding.btnSignUp.isEnabled = true
                     CommonUtils.showLoading(false, binding.progressBar)
                     CommonUtils.showErrorSnackBar(binding.root, result.message ?: "Register failed")
+                }
+
+                is Resource.Loading -> {
+                    binding.btnSignUp.isEnabled = false
+                    CommonUtils.showLoading(true, binding.progressBar)
                 }
 
                 is Resource.Success -> {
@@ -94,6 +94,10 @@ class RegisterFragment : Fragment() {
                     CommonUtils.showLoading(false, binding.progressBar)
                     CommonUtils.showSuccessSnackBar(binding.root, "Register success")
                     (activity as? AuthActivity)?.replaceFragment(LoginFragment())
+                }
+
+                else -> {
+                    CommonUtils.showMessages("Nothing 😏", requireContext())
                 }
             }
         }

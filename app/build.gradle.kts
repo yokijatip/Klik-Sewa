@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.config.ktx)
     debugImplementation(libs.library)
     releaseImplementation(libs.library.no.op)
 
@@ -84,12 +85,12 @@ dependencies {
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
 
     //  Delegate ViewModel
-    implementation (libs.androidx.navigation.fragment.ktx)
-    implementation (libs.androidx.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     //  Chip Navigation Bar
     //noinspection UseTomlInstead
-    implementation ("com.github.ismaeldivita:chip-navigation-bar:1.4.0")
+    implementation("com.github.ismaeldivita:chip-navigation-bar:1.4.0")
 
     // Import the Firebase BoM
     //noinspection UseTomlInstead
@@ -101,11 +102,19 @@ dependencies {
 
     // Image Auto Slider
     //noinspection UseTomlInstead
-    implementation ("com.github.denzcoskun:ImageSlideshow:0.1.2")
+    implementation("com.github.denzcoskun:ImageSlideshow:0.1.2")
 
     // Circle Image
     //noinspection UseTomlInstead
-    implementation ("de.hdodenhof:circleimageview:3.1.0")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    // Cloudinary
+    //noinspection UseTomlInstead
+    implementation ("com.cloudinary:cloudinary-android:2.3.1")
+
+    // Glide
+    //noinspection UseTomlInstead
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
 
     implementation(libs.androidx.core.ktx)

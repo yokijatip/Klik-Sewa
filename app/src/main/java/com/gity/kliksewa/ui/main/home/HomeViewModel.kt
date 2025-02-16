@@ -3,7 +3,10 @@ package com.gity.kliksewa.ui.main.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gity.kliksewa.data.model.BannerModel
-import com.gity.kliksewa.data.repository.BannerRepository
+import com.gity.kliksewa.data.model.ProductModel
+import com.gity.kliksewa.domain.repository.BannerRepository
+import com.gity.kliksewa.domain.repository.ProductRepository
+import com.gity.kliksewa.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,29 +16,48 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val bannerRepository: BannerRepository
+    private val bannerRepository: BannerRepository,
+    private val productRepository: ProductRepository
 ) : ViewModel() {
 
-    private val _banners = MutableStateFlow<List<BannerModel>>(emptyList())
-    val banners: StateFlow<List<BannerModel>> = _banners.asStateFlow()
+    // State untuk banners
+    private val _banners = MutableStateFlow<Resource<List<BannerModel>>>(Resource.Loading())
+    val banners: StateFlow<Resource<List<BannerModel>>> = _banners.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+    // State untuk recommended products
+    private val _recommendedProducts =
+        MutableStateFlow<Resource<List<ProductModel>>>(Resource.Loading())
+    val recommendedProducts: StateFlow<Resource<List<ProductModel>>> =
+        _recommendedProducts.asStateFlow()
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error.asStateFlow()
+    init {
+        loadBanners()
+        loadRecommendedProducts()
+    }
 
-    fun loadBanners() {
+    // Load banners
+    private fun loadBanners() {
         viewModelScope.launch {
-            _isLoading.value = true
-            bannerRepository.getBanners()
-                .onSuccess { bannerList ->
-                    _banners.value = bannerList
-                }
-                .onFailure { exception ->
-                    _error.value = exception.message
-                }
-            _isLoading.value = false
+            _banners.value = Resource.Loading()
+            try {
+                val bannerList = bannerRepository.getBanners()
+                _banners.value = Resource.Success(bannerList)
+            } catch (e: Exception) {
+                _banners.value = Resource.Error(e.message ?: "Failed to load banners")
+            }
+        }
+    }
+
+    // Load recommended products
+    private fun loadRecommendedProducts() {
+        viewModelScope.launch {
+            _recommendedProducts.value = Resource.Loading()
+            try {
+                val products = productRepository.getRecommendedProducts()
+                _recommendedProducts.value = Resource.Success(products)
+            } catch (e: Exception) {
+                _recommendedProducts.value = Resource.Error(e.message ?: "Failed to load products")
+            }
         }
     }
 }

@@ -1,6 +1,8 @@
 package com.gity.kliksewa.ui.main.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
@@ -22,9 +25,14 @@ import com.gity.kliksewa.data.model.BannerModel
 import com.gity.kliksewa.data.model.ProductCategoryModel
 import com.gity.kliksewa.databinding.FragmentHomeBinding
 import com.gity.kliksewa.helper.CommonUtils
+import com.gity.kliksewa.ui.main.cart.CartActivity
 import com.gity.kliksewa.ui.main.home.adapter.ProductCategoryAdapter
+import com.gity.kliksewa.ui.main.home.adapter.RecommendedProductAdapter
+import com.gity.kliksewa.ui.product.detail.DetailProductActivity
+import com.gity.kliksewa.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Suppress("DEPRECATION")
 @AndroidEntryPoint
@@ -36,6 +44,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var categoryAdapter: ProductCategoryAdapter
     private val viewModel: HomeViewModel by viewModels()
+
+    private lateinit var recommendedProductAdapter: RecommendedProductAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,11 +60,76 @@ class HomeFragment : Fragment() {
         setupNotificationBar()
         setupListener()
         setupRecyclerViewProductCategory()
-        setupBannerObserver()
-
-        // Load Banners
-        viewModel.loadBanners()
+        setupRecyclerViewRecommendedProducts()
+        observeData()
     }
+
+    private fun setupRecyclerViewRecommendedProducts() {
+        recommendedProductAdapter = RecommendedProductAdapter { product ->
+            navigateToDetailProduct(product.id)
+        }
+        binding.rvRecommendedProducts.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = recommendedProductAdapter
+            setHasFixedSize(true)
+            this.setHasFixedSize(true)
+        }
+        binding.rvRecommendedProducts.isNestedScrollingEnabled = false
+    }
+
+    private fun observeData() {
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.banners.collect { resource ->
+                        when (resource) {
+                            is Resource.Error -> {
+                                resource.message?.let { CommonUtils.showSnackBar(binding.root, it) }
+                            }
+
+                            is Resource.Loading -> {
+                                // loading  banner
+                                Timber.tag("HomeFragment").d("Loading banners...")
+                            }
+
+                            is Resource.Success -> {
+                                resource.data?.let { setupImageSlider(it) }
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.recommendedProducts.collect { resource ->
+                        when (resource) {
+                            is Resource.Error -> {
+                                resource.message?.let { CommonUtils.showSnackBar(binding.root, it) }
+                                Timber.tag("HomeFragment").e("Error: ${resource.message}")
+                            }
+
+                            is Resource.Loading -> {
+                                //  loading untuk produk
+                                recommendedProductAdapter.submitList(emptyList()) // Kosongkan daftar sementara
+                                Timber.tag("HomeFragment").d("Loading products...")
+                            }
+
+                            is Resource.Success -> {
+                                Timber.d("Success loading products: ${resource.data?.size}")
+                                if (resource.data.isNullOrEmpty()) {
+                                    Timber.d("Product list is empty")
+                                } else {
+                                    recommendedProductAdapter.submitList(resource.data)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
 
     private fun setupNotificationBar() {
         // Make status bar black
@@ -82,6 +157,12 @@ class HomeFragment : Fragment() {
             // Handle search button click
             CommonUtils.showSnackBar(binding.root, "Search button clicked")
         }
+        binding.tvRecommendedForYou.setOnClickListener {
+            navigateToDetailProduct("waduh")
+        }
+        binding.btnCart.setOnClickListener {
+            navigateToCart()
+        }
     }
 
     @SuppressLint("Recycle")
@@ -90,7 +171,7 @@ class HomeFragment : Fragment() {
         categoryAdapter = ProductCategoryAdapter()
 
         binding.rvCategoryProduct.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = categoryAdapter
             setHasFixedSize(true)
         }
@@ -121,37 +202,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setupBannerObserver() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                // Observer Banner
-                launch {
-                    viewModel.banners.collect { banners ->
-                        if (banners.isNotEmpty()) {  // Changed from isEmpty to isNotEmpty
-                            setupImageSlider(banners)
-                        }
-                    }
-                }
-
-                // Observe loading
-                launch {
-                    viewModel.isLoading.collect {
-                        // TODO Pake loading disini
-                    }
-                }
-
-                // Observe errors
-                launch {
-                    viewModel.error.collect { errorMessage ->
-                        errorMessage?.let {
-                            CommonUtils.showSnackBar(binding.root, it)
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     private fun setupImageSlider(banners: List<BannerModel>) {
         val slideModels = banners.map { banner ->
             SlideModel(
@@ -174,6 +224,23 @@ class HomeFragment : Fragment() {
                 )
             }
         })
+    }
+
+
+    private fun navigateToDetailProduct(productId: String) {
+        // Intent untuk berpindah ke DetailProductActivity
+        val intent = Intent(requireContext(), DetailProductActivity::class.java)
+        intent.putExtra("PRODUCT_ID", productId) // Contoh: Mengirim ID produk
+        // Mulai activity
+        startActivity(intent)
+
+        requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    }
+
+    private fun navigateToCart() {
+        val intent = Intent(requireContext(), CartActivity::class.java)
+        startActivity(intent)
+        requireActivity().overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_down)
     }
 
 
