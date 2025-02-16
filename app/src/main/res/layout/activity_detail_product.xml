@@ -30,10 +30,10 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:clipToPadding="false"
         android:fillViewport="true"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:clipToPadding="false"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,15 +44,17 @@
             android:layout_height="wrap_content">
 
             <!-- Product Image -->
-            <ImageView
+            <com.denzcoskun.imageslider.ImageSlider
                 android:id="@+id/iv_product_image"
                 android:layout_width="match_parent"
                 android:layout_height="240dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/iv_avanza"
+                app:iss_auto_cycle="true"
+                app:iss_delay="3000"
+                app:iss_period="3000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/iv_avanza" />
 
             <!-- Category & Rating -->
             <LinearLayout
@@ -75,13 +77,14 @@
                     app:strokeWidth="0dp">
 
                     <TextView
+                        android:id="@+id/tv_product_category"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/opensans_medium"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="4dp"
-                        android:text="Camera"
-                        android:textColor="@color/dark_gray" />
+                        android:textColor="@color/dark_gray"
+                        tools:text="Camera" />
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -108,16 +111,18 @@
 
                     <!-- Rating Text -->
                     <TextView
+                        android:id="@+id/tv_product_total_ratings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:fontFamily="@font/opensans_semi_bold"
-                        android:text="4.0"
                         android:textColor="@color/dark_gray"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        tools:text="4.0" />
 
                     <!-- Review Count -->
                     <TextView
+                        android:id="@+id/tv_product_total_reviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
@@ -150,6 +155,7 @@
 
                     <!-- Product Name -->
                     <TextView
+                        android:id="@+id/tv_product_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -163,6 +169,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
                     <TextView
+                        android:id="@+id/tv_product_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -190,6 +197,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:clipToPadding="false"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="4dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -203,7 +211,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:fontFamily="@font/opensans_semi_bold"
                 android:text="@string/product_description"
                 android:textColor="@color/black"
@@ -219,8 +227,8 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:fontFamily="@font/opensans_regular"
                 android:ellipsize="end"
+                android:fontFamily="@font/opensans_regular"
                 android:textColor="@color/dark_gray"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -234,12 +242,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:fontFamily="@font/opensans_semi_bold"
-                android:text="Read More"
-                android:textColor="@color/black"
-                android:padding="4dp"
                 android:clickable="true"
                 android:focusable="true"
+                android:fontFamily="@font/opensans_semi_bold"
+                android:padding="4dp"
+                android:text="Read More"
+                android:textColor="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_product_description" />
 
@@ -265,6 +273,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginEnd="4dp"
             android:layout_weight="1"
             android:gravity="start|center"
             android:orientation="vertical">
@@ -285,19 +294,21 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tv_product_total_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/opensans_semi_bold"
-                    android:text="Rp 30.000"
                     android:textColor="@color/black"
-                    android:textSize="18sp" />
+                    android:textSize="18sp"
+                    tools:text="Rp 30.000" />
 
                 <TextView
+                    android:id="@+id/tv_product_price_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/opensans_semi_bold"
-                    android:text=" / Per day"
-                    android:textColor="@color/dark_gray" />
+                    android:textColor="@color/dark_gray"
+                    tools:text=" / Per day" />
 
             </LinearLayout>
 
@@ -308,10 +319,10 @@
             android:id="@+id/btn_add_product"
             android:layout_width="wrap_content"
             android:layout_height="62dp"
-            android:layout_weight="1"
+            android:layout_marginStart="4dp"
             android:backgroundTint="@color/black"
             android:fontFamily="@font/opensans_medium"
-            android:paddingHorizontal="31dp"
+            android:paddingHorizontal="38dp"
             android:text="@string/add_product_no_enter"
             app:cornerRadius="12dp"
             app:textAllCaps="false" />

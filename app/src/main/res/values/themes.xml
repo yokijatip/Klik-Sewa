@@ -73,5 +73,11 @@
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
+    <!-- Custom AutoCompleteTextView style -->
+    <style name="CustomAutoCompleteTextViewStyle" parent="Widget.MaterialComponents.AutoCompleteTextView.OutlinedBox">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:popupBackground">@android:color/white</item>
+    </style>
+
     <style name="Theme.KlikSewa" parent="Base.Theme.KlikSewa" />
 </resources>

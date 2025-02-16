@@ -23,6 +23,7 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.gity.kliksewa.R
 import com.gity.kliksewa.data.model.BannerModel
 import com.gity.kliksewa.data.model.ProductCategoryModel
+import com.gity.kliksewa.data.model.ProductModel
 import com.gity.kliksewa.databinding.FragmentHomeBinding
 import com.gity.kliksewa.helper.CommonUtils
 import com.gity.kliksewa.ui.main.cart.CartActivity
@@ -235,6 +236,7 @@ class HomeFragment : Fragment() {
         startActivity(intent)
 
         requireActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
     }
 
     private fun navigateToCart() {

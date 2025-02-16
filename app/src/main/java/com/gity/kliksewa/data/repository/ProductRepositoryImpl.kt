@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -44,7 +45,10 @@ class ProductRepositoryImpl @Inject constructor(
         return try {
             // Ambil data produk dari Firestore
             val querySnapshot = firestore.collection("products")
-                .orderBy("createdAt", Query.Direction.DESCENDING) // Urutkan berdasarkan waktu pembuatan (terbaru)
+                .orderBy(
+                    "createdAt",
+                    Query.Direction.DESCENDING
+                ) // Urutkan berdasarkan waktu pembuatan (terbaru)
                 .limit(10) // Batasi jumlah produk yang diambil (misalnya 10 produk)
                 .get()
                 .await()
@@ -55,6 +59,21 @@ class ProductRepositoryImpl @Inject constructor(
             // Jika terjadi error, lempar exception atau kembalikan daftar kosong
             e.printStackTrace()
             emptyList()
+        }
+    }
+
+    override suspend fun getProductById(productId: String): ProductModel {
+        return try {
+            // Ambil data produk berdasarkan ID dari Firestore
+            val documentSnapshot =
+                firestore.collection("products").document(productId).get().await()
+            documentSnapshot.toObject(ProductModel::class.java)
+                ?: throw Exception("Product not found")
+        } catch (e: Exception) {
+            // Jika terjadi error, lempar exception atau kembalikan produk kosong
+            Timber.tag("ProductRepositoryImpl").e("Error fetching product by ID: $e")
+            e.printStackTrace()
+            ProductModel()
         }
     }
 

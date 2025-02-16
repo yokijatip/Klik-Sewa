@@ -28,18 +28,41 @@
                 android:layout_margin="8dp"
                 android:src="@drawable/ic_dot_arrow_left" />
 
+
+
+
         </com.google.android.material.card.MaterialCardView>
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="@font/opensans_semi_bold"
-            android:text="@string/product_images"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/opensans_semi_bold"
+                android:text="@string/product_images"
+                android:textSize="18sp"
+                android:layout_weight="1"
+                android:textColor="@color/black"/>
+
+            <!-- Toggle Button Favorite -->
+            <ImageButton
+                android:id="@+id/btn_delete_image"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_trash_solid" />
+
+        </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/btn_pick_images"
@@ -61,9 +84,11 @@
                         android:layout_weight="1"
                         app:strokeColor="@color/gray"
                         android:layout_marginEnd="8dp"
+                        app:strokeWidth="0dp"
                         android:backgroundTint="@android:color/transparent">
 
                         <ImageView
+                            android:id="@+id/iv_product_image_1"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_media_image_plus"/>
@@ -76,9 +101,11 @@
                         android:layout_height="match_parent"
                         app:strokeColor="@color/gray"
                         android:layout_marginStart="8dp"
+                        app:strokeWidth="0dp"
                         android:backgroundTint="@android:color/transparent">
 
                         <ImageView
+                            android:id="@+id/iv_product_image_2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:src="@drawable/ic_media_image_plus"/>
@@ -198,6 +225,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:background="@null"
                 android:maxLines="1"/>
 
         </com.google.android.material.textfield.TextInputLayout>

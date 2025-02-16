@@ -35,6 +35,11 @@
         <item name="cornerSizeBottomRight">16dp</item>
     </style>
 
+    <style name="CustomDropDownStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="android:popupBackground">@android:color/white</item>
+        <item name="android:dropDownVerticalOffset">1dp</item>
+    </style>
+
     <style name="BottomRoundCard20dp" parent="Widget.MaterialComponents.CardView">
         <item name="cornerSizeTopLeft">0dp</item>
         <item name="cornerSizeTopRight">0dp</item>

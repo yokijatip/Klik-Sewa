@@ -4,20 +4,34 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.denzcoskun.imageslider.constants.ScaleTypes
+import com.denzcoskun.imageslider.models.SlideModel
 import com.gity.kliksewa.R
+import com.gity.kliksewa.data.model.ProductModel
 import com.gity.kliksewa.databinding.ActivityDetailProductBinding
 import com.gity.kliksewa.helper.CommonUtils
+import com.gity.kliksewa.ui.product.detail.adapter.ProductPriceTypeAdapter
+import com.gity.kliksewa.util.Resource
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
+@AndroidEntryPoint
 @Suppress("DEPRECATION")
 class DetailProductActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailProductBinding
+    private val viewModel: DetailProductViewModel by viewModels()
     private var isFavorite = false
     private var isDescriptionProductExpanded = false
     private var originalText = ""
+    private lateinit var productPriceTypeAdapter: ProductPriceTypeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDetailProductBinding.inflate(layoutInflater)
@@ -29,13 +43,14 @@ class DetailProductActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        setSampleDescription()
+        val productId = intent.getStringExtra("PRODUCT_ID") ?: return
+        viewModel.getProductDetails(productId)
 
         setupClickListener()
         setupBackButtonHandling()
         setupFavoriteButton()
         setupDescription()
+        observerProductDetails()
 
     }
 
@@ -47,26 +62,34 @@ class DetailProductActivity : AppCompatActivity() {
         }
     }
 
+    private fun observerProductDetails() {
+        lifecycleScope.launch {
+            viewModel.productDetails.observe(
+                this@DetailProductActivity
+            ) { resource ->
+                when (resource) {
+                    is Resource.Error -> {
+                        Timber.tag("DetailProductActivity").e("Error: ${resource.message}")
+                    }
+
+                    is Resource.Loading -> {
+                        // Buat Loading
+                        Timber.tag("DetailProductActivity").e("Loading")
+                    }
+
+                    is Resource.Success -> {
+                        resource.data?.let { displayProductDetails(it) }
+                    }
+                }
+            }
+        }
+    }
+
     private fun setupFavoriteButton() {
         binding.btnFavorite.setOnClickListener {
             isFavorite = !isFavorite
             binding.btnFavorite.isSelected = isFavorite
-            CommonUtils.showSnackBar(
-                binding.root,
-                if (isFavorite) "Ditambahkan ke favorit" else "Dihapus dari favorit"
-            )
         }
-    }
-
-    private fun setSampleDescription() {
-        // Sample long text for testing
-        val sampleText = """
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-        """.trimIndent()
-
-        binding.tvProductDescription.text = sampleText
     }
 
     private fun setupDescription() {
@@ -100,6 +123,25 @@ class DetailProductActivity : AppCompatActivity() {
         }
     }
 
+    private fun displayProductDetails(product: ProductModel) {
+        binding.apply {
+            tvProductName.text = product.name
+            tvProductAddress.text = product.address
+            tvProductDescription.text = product.description
+            tvProductTotalRatings.text = product.rating.toString()
+            tvProductTotalReviews.text = product.reviews.size.toString()
+            tvProductCategory.text = product.category
+        }
+        setupImageSlider(product.images)
+        setupPriceTypeRecyclerView(product)
+    }
+
+    private fun setupImageSlider(images: List<String>) {
+        //  setup Image Auto Slider
+        val slideModels = images.map { SlideModel(it, ScaleTypes.CENTER_CROP) }
+        binding.ivProductImage.setImageList(slideModels)
+    }
+
     override fun finish() {
         super.finish()
         // Animasi saat kembali ke HomeFragment
@@ -115,4 +157,49 @@ class DetailProductActivity : AppCompatActivity() {
         }
         onBackPressedDispatcher.addCallback(this, callback)
     }
+
+    private fun setupPriceTypeRecyclerView(product: ProductModel) {
+        // Filter price type yang valid (tidak null dan lebih dari 0)
+        val validPriceTypes = mutableListOf<Pair<String, Double>>().apply {
+            if (product.pricePerHour != null && product.pricePerHour > 0) add("Per Jam" to product.pricePerHour)
+            if (product.pricePerDay != null && product.pricePerDay > 0) add("Per Hari" to product.pricePerDay)
+            if (product.pricePerWeek != null && product.pricePerWeek > 0) add("Per Minggu" to product.pricePerWeek)
+            if (product.pricePerMonth != null && product.pricePerMonth > 0) add("Per Bulan" to product.pricePerMonth)
+        }
+
+        // Jika ada price type yang valid, tampilkan RecyclerView
+        if (validPriceTypes.isNotEmpty()) {
+            productPriceTypeAdapter = ProductPriceTypeAdapter(validPriceTypes) { selectedPrice ->
+                val formattedPrice = CommonUtils.formatCurrency(selectedPrice)
+                binding.tvProductTotalPrice.text = formattedPrice
+            }
+
+            // Set default selected position
+            val defaultPosition = getDefaultPriceTypePosition(validPriceTypes)
+            productPriceTypeAdapter.setDefaultSelectedPosition(defaultPosition)
+
+            // Set default price
+            val defaultPrice = validPriceTypes[defaultPosition].second
+            binding.tvProductTotalPrice.text = CommonUtils.formatCurrency(defaultPrice)
+
+            binding.rvProductPriceType.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+            binding.rvProductPriceType.adapter = productPriceTypeAdapter
+            binding.rvProductPriceType.visibility = View.VISIBLE
+        } else {
+            // Jika tidak ada price type yang valid, sembunyikan RecyclerView
+            binding.rvProductPriceType.visibility = View.GONE
+            binding.tvProductTotalPrice.text = "Tidak tersedia"
+        }
+    }
+
+    private fun getDefaultPriceTypePosition(priceTypes: List<Pair<String, Double>>): Int {
+        // Urutan prioritas: Per Day -> Per Hour -> Per Week -> Per Month
+        val priorityOrder = listOf("Per Hari", "Per Jam", "Per Minggu", "Per Bulan")
+        for (type in priorityOrder) {
+            val index = priceTypes.indexOfFirst { it.first == type }
+            if (index != -1) return index
+        }
+        return 0 // Default ke item pertama jika tidak ada yang sesuai
+    }
+
 }

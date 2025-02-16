@@ -44,17 +44,8 @@ class RecommendedProductAdapter(
             // Load gambar produk menggunakan Glide
             binding.apply {
 
-                val glideUrl = GlideUrl(
-                    product.images[0],
-                    LazyHeaders.Builder()
-                        .addHeader("User-Agent", "your-application-name")
-                        // Tambahkan header lain jika diperlukan
-                        .build()
-                )
-
-
                 Glide.with(root.context)
-                    .load(glideUrl)
+                    .load(product.images[0])
                     .placeholder(R.drawable.iv_image_placeholder)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(ivImageProduct)
@@ -82,8 +73,6 @@ class RecommendedProductAdapter(
         }
 
     }
-
-
 }
 
 // DiffUtil untuk membandingkan daftar produk

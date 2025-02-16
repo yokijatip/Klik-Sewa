@@ -8,6 +8,8 @@ import com.gity.kliksewa.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import java.io.File
+import java.text.NumberFormat
+import java.util.Locale
 
 object CommonUtils {
     fun showMessages(message: String, context: Context) {
@@ -128,10 +130,10 @@ object CommonUtils {
     ): String {
         // Urutan prioritas: day > hour > week > month
         val selectedPrice = when {
-            pricePerDay != null -> Pair(pricePerDay, "Per Day")
-            pricePerHour != null -> Pair(pricePerHour, "Per Hour")
-            pricePerWeek != null -> Pair(pricePerWeek, "Per Week")
-            pricePerMonth != null -> Pair(pricePerMonth, "Per Month")
+            pricePerDay != null && pricePerDay > 0 -> Pair(pricePerDay, "Per Day")
+            pricePerHour != null && pricePerHour > 0 -> Pair(pricePerHour, "Per Hour")
+            pricePerWeek != null && pricePerWeek > 0 -> Pair(pricePerWeek, "Per Week")
+            pricePerMonth != null && pricePerMonth > 0 -> Pair(pricePerMonth, "Per Month")
             else -> null
         }
 
@@ -141,6 +143,12 @@ object CommonUtils {
         } else {
             "Harga tidak tersedia"
         }
+    }
+
+     fun formatCurrency(amount: Double): String {
+        val format = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
+        format.maximumFractionDigits = 0
+        return format.format(amount)
     }
 
 
