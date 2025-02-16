@@ -103,6 +103,21 @@ class AddProductActivity : AppCompatActivity() {
                 ) {
                     try {
                         //  logika untuk menambahkan produk ke Firebase
+//                        val product = ProductModel(
+//                            id = UUID.randomUUID().toString(),
+//                            ownerId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty(),
+//                            name = productName,
+//                            description = productDescription,
+//                            address = productAddress,
+//                            category = productCategory,
+//                            unitPrice = productUnitPrice.toDouble(),
+//                            pricePerHour = productPricePerHour.toDouble(),
+//                            pricePerDay = productPricePerDay.toDouble(),
+//                            pricePerWeek = productPricePerWeek.toDouble(),
+//                            pricePerMonth = productPricePerMonth.toDouble(),
+//                            images = imageUris.map { it }
+//                        )
+
                         val product = ProductModel(
                             id = UUID.randomUUID().toString(),
                             ownerId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty(),
@@ -111,10 +126,10 @@ class AddProductActivity : AppCompatActivity() {
                             address = productAddress,
                             category = productCategory,
                             unitPrice = productUnitPrice.toDouble(),
-                            pricePerHour = productPricePerHour.toDouble(),
-                            pricePerDay = productPricePerDay.toDouble(),
-                            pricePerWeek = productPricePerWeek.toDouble(),
-                            pricePerMonth = productPricePerMonth.toDouble(),
+                            pricePerHour = productPricePerHour.takeIf { it.isNotEmpty() }?.toDouble() ?: 0.0,
+                            pricePerDay = productPricePerDay.takeIf { it.isNotEmpty() }?.toDouble() ?: 0.0,
+                            pricePerWeek = productPricePerWeek.takeIf { it.isNotEmpty() }?.toDouble() ?: 0.0,
+                            pricePerMonth = productPricePerMonth.takeIf { it.isNotEmpty() }?.toDouble() ?: 0.0,
                             images = imageUris.map { it }
                         )
                         viewModel.addProduct(product)
@@ -227,18 +242,46 @@ class AddProductActivity : AppCompatActivity() {
                 false
             }
 
-            productPricePerHour.isEmpty() && productPricePerDay.isEmpty() &&
-                    productPricePerWeek.isEmpty() && productPricePerMonth.isEmpty() -> {
+            !validatePriceTypes(
+                productPricePerHour,
+                productPricePerDay,
+                productPricePerWeek,
+                productPricePerMonth
+            ) -> {
                 CommonUtils.showSnackBar(
                     binding.root,
-                    "Minimal satu harga (per jam, hari, minggu, atau bulan) harus diisi"
+                    "Minimal satu harga (per jam, hari, minggu, atau bulan) harus diisi dengan benar"
                 )
-                Timber.tag("AddProduct").e("At least one price type must be filled")
+                Timber.tag("AddProduct").e("At least one price type must be filled with valid number")
                 false
             }
 
             else -> true
         }
+    }
+
+    private fun validatePriceTypes(
+        pricePerHour: String,
+        pricePerDay: String,
+        pricePerWeek: String,
+        pricePerMonth: String
+    ): Boolean {
+        // Count how many price types are filled with valid numbers
+        var validPriceCount = 0
+
+        listOf(pricePerHour, pricePerDay, pricePerWeek, pricePerMonth).forEach { price ->
+            if (price.isNotEmpty()) {
+                try {
+                    price.toDouble()
+                    validPriceCount++
+                } catch (e: NumberFormatException) {
+                    Timber.tag("AddProduct").e("Invalid price format: $price")
+                    return false // Return false if any non-empty price is not a valid number
+                }
+            }
+        }
+
+        return validPriceCount > 0
     }
 
     private fun setupCategoryDropdown() {
