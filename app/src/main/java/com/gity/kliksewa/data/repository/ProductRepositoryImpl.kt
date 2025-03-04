@@ -41,8 +41,8 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getRecommendedProducts(): List<ProductModel> {
-        return try {
+    override suspend fun getRecommendedProducts(): List<ProductModel> = withContext(Dispatchers.IO) {
+        try {
             // Ambil data produk dari Firestore
             val querySnapshot = firestore.collection("products")
                 .orderBy(

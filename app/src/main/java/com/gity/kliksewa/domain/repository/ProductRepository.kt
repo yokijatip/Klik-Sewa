@@ -8,5 +8,4 @@ interface ProductRepository {
     suspend fun addProduct(product: ProductModel): Flow<Resource<Unit>>
     suspend fun getRecommendedProducts(): List<ProductModel>
     suspend fun getProductById(productId: String): ProductModel
-
 }
