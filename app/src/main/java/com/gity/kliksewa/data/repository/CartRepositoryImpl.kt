@@ -35,4 +35,28 @@ class CartRepositoryImpl @Inject constructor(
             Resource.Error(e.message ?: "Failed to get cart items")
         }
     }
+
+    override suspend fun removeFromCart(userId: String, productId: String): Resource<Unit> {
+        return try {
+            val cartRef = firestore.collection("users").document(userId).collection("cart")
+            cartRef.document(productId).delete().await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Failed to remove from cart")
+        }
+    }
+
+    override suspend fun updateQuantity(
+        userId: String,
+        productId: String,
+        newQuantity: Int
+    ): Resource<Unit> {
+        return try {
+            val cartRef = firestore.collection("users").document(userId).collection("cart")
+            cartRef.document(productId).update("quantity", newQuantity).await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Failed to update quantity")
+        }
+    }
 }
