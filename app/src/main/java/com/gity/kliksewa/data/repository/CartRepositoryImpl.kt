@@ -4,7 +4,9 @@ import com.gity.kliksewa.data.model.CartItemModel
 import com.gity.kliksewa.domain.repository.CartRepository
 import com.gity.kliksewa.util.Resource
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,8 +24,8 @@ class CartRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCartItems(userId: String): Resource<List<CartItemModel>> {
-        return try {
+    override suspend fun getCartItems(userId: String): Resource<List<CartItemModel>> = withContext(Dispatchers.IO) {
+        try {
             val cartItems = firestore.collection("users")
                 .document(userId)
                 .collection("cart")
@@ -36,8 +38,8 @@ class CartRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun removeFromCart(userId: String, productId: String): Resource<Unit> {
-        return try {
+    override suspend fun removeFromCart(userId: String, productId: String): Resource<Unit> = withContext(Dispatchers.IO) {
+         try {
             val cartRef = firestore.collection("users").document(userId).collection("cart")
             cartRef.document(productId).delete().await()
             Resource.Success(Unit)
@@ -50,8 +52,8 @@ class CartRepositoryImpl @Inject constructor(
         userId: String,
         productId: String,
         newQuantity: Int
-    ): Resource<Unit> {
-        return try {
+    ): Resource<Unit> = withContext(Dispatchers.IO) {
+         try {
             val cartRef = firestore.collection("users").document(userId).collection("cart")
             cartRef.document(productId).update("quantity", newQuantity).await()
             Resource.Success(Unit)

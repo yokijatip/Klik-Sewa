@@ -28,6 +28,7 @@ class CartActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCartBinding
     private val viewModel: CartViewModel by viewModels()
     private lateinit var cartAdapter: CartAdapter
+    private lateinit var userId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCartBinding.inflate(layoutInflater)
@@ -39,6 +40,9 @@ class CartActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+
         setupClickListener()
         setupBackButtonHandling()
         setupNotificationBar()
@@ -67,7 +71,15 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        cartAdapter = CartAdapter()
+        cartAdapter = CartAdapter(
+            onQuantityUpdated = {
+                productId, newQuantity ->
+                viewModel.updateCartItemQuantity(userId, productId, newQuantity)
+            },
+            onItemDeleted = { productId ->
+                viewModel.deleteCartItem(userId, productId)
+            }
+        )
         binding.rvProductsCart.layoutManager = LinearLayoutManager(this)
         binding.rvProductsCart.adapter = cartAdapter
     }
@@ -77,7 +89,9 @@ class CartActivity : AppCompatActivity() {
             viewModel.cartItems.collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
-                        resource.data?.let { cartAdapter.submitList(it) }
+                        resource.data?.let { newList ->
+                            cartAdapter.submitList(newList.toList()) // Buat list baru agar DiffUtil mendeteksi perubahan
+                        }
                     }
 
                     is Resource.Error -> {

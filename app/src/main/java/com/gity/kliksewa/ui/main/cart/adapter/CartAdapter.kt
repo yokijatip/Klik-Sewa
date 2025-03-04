@@ -11,7 +11,10 @@ import com.gity.kliksewa.data.model.CartItemModel
 import com.gity.kliksewa.databinding.ListCartProductBinding
 import com.gity.kliksewa.helper.CommonUtils
 
-class CartAdapter : ListAdapter<CartItemModel, CartAdapter.CartViewHolder>(DiffCallback()) {
+class CartAdapter(
+    private val onQuantityUpdated: (productId: String, newQuantity: Int) -> Unit,
+    private val onItemDeleted: (productId: String) -> Unit
+) : ListAdapter<CartItemModel, CartAdapter.CartViewHolder>(DiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartAdapter.CartViewHolder {
         val binding = ListCartProductBinding.inflate(
             LayoutInflater.from(parent.context),
@@ -43,14 +46,19 @@ class CartAdapter : ListAdapter<CartItemModel, CartAdapter.CartViewHolder>(DiffC
                     // Handle button plus
                     btnPlus.setOnClickListener {
                         // Logic Add Quantity
-                        tvProductQuantity.text = (tvProductQuantity.text.toString().toInt() + 1).toString()
+                        val newQuantity = cartItem.quantity + 1
+                        tvProductQuantity.text = newQuantity.toString() // Perbarui UI Langsung
+                        onQuantityUpdated(cartItem.productId, newQuantity)
                     }
 
                     // Handle button minus
                     btnMinus.setOnClickListener {
-                        // Logic Substract Quantity
-                        if (tvProductQuantity.text.toString().toInt() > 1) {
-                            tvProductQuantity.text = (tvProductQuantity.text.toString().toInt() - 1).toString()
+                        if (cartItem.quantity > 1) {
+                            val newQuantity = cartItem.quantity - 1
+                            tvProductQuantity.text = newQuantity.toString() // Perbarui UI Langsung
+                            onQuantityUpdated(cartItem.productId, newQuantity)
+                        } else {
+                            onItemDeleted(cartItem.productId) // Hapus item jika quantity = 1
                         }
 
                     }

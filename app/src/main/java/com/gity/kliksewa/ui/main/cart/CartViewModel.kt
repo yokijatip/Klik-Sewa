@@ -28,9 +28,17 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun updateCartItemQuantity(userId: String, productId: String, newQuantity: String) {
+    fun updateCartItemQuantity(userId: String, productId: String, newQuantity: Int) {
         viewModelScope.launch {
+            cartUseCase.updateCartItemQuantity(userId, productId, newQuantity)
+            getCartItems(userId)
+        }
+    }
 
+    fun deleteCartItem(userId: String, productId: String) {
+        viewModelScope.launch {
+            cartUseCase.deleteCartItem(userId, productId)
+            getCartItems(userId)
         }
     }
 }
