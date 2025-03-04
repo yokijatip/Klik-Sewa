@@ -1,5 +1,6 @@
 package com.gity.kliksewa.ui.product.detail
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -13,11 +14,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.gity.kliksewa.R
+import com.gity.kliksewa.data.model.CartItemModel
 import com.gity.kliksewa.data.model.ProductModel
 import com.gity.kliksewa.databinding.ActivityDetailProductBinding
 import com.gity.kliksewa.helper.CommonUtils
 import com.gity.kliksewa.ui.product.detail.adapter.ProductPriceTypeAdapter
 import com.gity.kliksewa.util.Resource
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -29,9 +32,9 @@ class DetailProductActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailProductBinding
     private val viewModel: DetailProductViewModel by viewModels()
     private var isFavorite = false
-    private var isDescriptionProductExpanded = false
-    private var originalText = ""
     private lateinit var productPriceTypeAdapter: ProductPriceTypeAdapter
+    private var selectedPriceType: Pair<String, Double>? = null
+    private var currentProduct: ProductModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityDetailProductBinding.inflate(layoutInflater)
@@ -43,15 +46,24 @@ class DetailProductActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val productId = intent.getStringExtra("PRODUCT_ID") ?: return
-        viewModel.getProductDetails(productId)
+
+        // Ambil product ID dari intent dan periksa apakah null
+        val productId = intent.getStringExtra("PRODUCT_ID")
+        if (productId == null) {
+            CommonUtils.showSnackBar(binding.root, "ID Produk tidak ditemukan")
+            finish()
+            return
+        }
 
         setupClickListener()
         setupBackButtonHandling()
         setupFavoriteButton()
-        setupDescription()
-        observerProductDetails()
+        observeProductDetails()
+        observeAddToCartResult()
 
+//        Muat Detail Produk
+        showLoading(true)
+        viewModel.getProductDetails(productId)
     }
 
     private fun setupClickListener() {
@@ -59,67 +71,110 @@ class DetailProductActivity : AppCompatActivity() {
             btnBack.setOnClickListener {
                 finish()
             }
+            btnAddProduct.setOnClickListener {
+                addToCartProduct()
+            }
         }
     }
 
-    private fun observerProductDetails() {
+
+    private fun addToCartProduct() {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId == null) {
+            CommonUtils.showSnackBar(binding.root, "Anda harus login terlebih dahulu")
+            return
+        }
+
+        val product = currentProduct
+        if (product == null) {
+            CommonUtils.showSnackBar(binding.root, "Produk tidak ditemukan")
+            return
+        }
+
+        // Gunakan selectedPriceType yang dipilih pengguna atau gunakan default
+        val priceType = selectedPriceType ?: run {
+            // Jika pengguna belum memilih, gunakan default (Per Hari)
+            product.pricePerDay?.let { "Per Hari" to it } ?: run {
+                CommonUtils.showSnackBar(binding.root, "Harga produk tidak tersedia")
+                return
+            }
+        }
+
+        val cartItem = CartItemModel(
+            productId = product.id,
+            productName = product.name,
+            productAddress = product.address,
+            productPriceType = priceType.first,
+            quantity = 1, // Default quantity
+            price = priceType.second,
+            imageUrl = product.images.firstOrNull() ?: ""
+        )
+
+        viewModel.addToCart(userId, cartItem)
+        showLoading(true)
+    }
+
+    private fun observeProductDetails() {
+        viewModel.productDetails.observe(this) { resource ->
+            showLoading(resource is Resource.Loading)
+
+            when (resource) {
+                is Resource.Error -> {
+                    Timber.tag("DetailProductActivity").e("Error: ${resource.message}")
+                    CommonUtils.showSnackBar(binding.root, "Gagal memuat produk: ${resource.message}")
+                }
+                is Resource.Loading -> {
+                    // Loading state handled by showLoading()
+                }
+                is Resource.Success -> {
+                    resource.data?.let {
+                        currentProduct = it
+                        displayProductDetails(it)
+                    }
+                }
+                else -> {}
+            }
+        }
+    }
+
+    private fun observeAddToCartResult() {
         lifecycleScope.launch {
-            viewModel.productDetails.observe(
-                this@DetailProductActivity
-            ) { resource ->
+            viewModel.addToCartResult.collect { resource ->
+                showLoading(resource is Resource.Loading)
+
                 when (resource) {
-                    is Resource.Error -> {
-                        Timber.tag("DetailProductActivity").e("Error: ${resource.message}")
-                    }
-
-                    is Resource.Loading -> {
-                        // Buat Loading
-                        Timber.tag("DetailProductActivity").e("Loading")
-                    }
-
                     is Resource.Success -> {
-                        resource.data?.let { displayProductDetails(it) }
+                        CommonUtils.showSnackBar(
+                            binding.root,
+                            "Produk berhasil ditambahkan ke keranjang"
+                        )
                     }
+                    is Resource.Error -> {
+                        CommonUtils.showSnackBar(
+                            binding.root,
+                            "Gagal menambahkan produk: ${resource.message}"
+                        )
+                    }
+                    is Resource.Loading -> {
+                        // Loading state handled by showLoading()
+                    }
+                    else -> {}
                 }
             }
         }
     }
 
     private fun setupFavoriteButton() {
-        binding.btnFavorite.setOnClickListener {
-            isFavorite = !isFavorite
-            binding.btnFavorite.isSelected = isFavorite
-        }
-    }
+        binding.btnFavorite.apply {
+            isSelected = isFavorite
+            setOnClickListener {
+                isFavorite = !isFavorite
+                isSelected = isFavorite
 
-    private fun setupDescription() {
-        val description = binding.tvProductDescription
-        val readMoreText = binding.tvReadMore
-
-        // Get the text that was set in setSampleDescription
-        originalText = description.text.toString()
-
-        if (originalText.length > 200) {
-            // Initially show collapsed text
-            description.maxLines = 4
-            readMoreText.visibility = View.VISIBLE
-            readMoreText.text = "Read More"
-
-            readMoreText.setOnClickListener {
-                if (isDescriptionProductExpanded) {
-                    // Collapse the text
-                    description.maxLines = 4
-                    readMoreText.text = "Read More"
-                } else {
-                    // Expand the text
-                    description.maxLines = Integer.MAX_VALUE
-                    readMoreText.text = "Show Less"
-                }
-                isDescriptionProductExpanded = !isDescriptionProductExpanded
+                // TODO: Implementasi menambah/menghapus favorit ke database
+                val message = if (isFavorite) "Ditambahkan ke favorit" else "Dihapus dari favorit"
+                CommonUtils.showSnackBar(binding.root, message)
             }
-        } else {
-            // Hide read more if text is short
-            readMoreText.visibility = View.GONE
         }
     }
 
@@ -132,7 +187,14 @@ class DetailProductActivity : AppCompatActivity() {
             tvProductTotalReviews.text = product.reviews.size.toString()
             tvProductCategory.text = product.category
         }
-        setupImageSlider(product.images)
+
+        // Setup image slider jika ada gambar
+        if (product.images.isNotEmpty()) {
+            setupImageSlider(product.images)
+        } else {
+            // TODO: Tampilkan placeholder image jika tidak ada gambar
+        }
+
         setupPriceTypeRecyclerView(product)
     }
 
@@ -158,18 +220,24 @@ class DetailProductActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, callback)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupPriceTypeRecyclerView(product: ProductModel) {
         // Filter price type yang valid (tidak null dan lebih dari 0)
         val validPriceTypes = mutableListOf<Pair<String, Double>>().apply {
-            if (product.pricePerHour != null && product.pricePerHour > 0) add("Per Jam" to product.pricePerHour)
-            if (product.pricePerDay != null && product.pricePerDay > 0) add("Per Hari" to product.pricePerDay)
-            if (product.pricePerWeek != null && product.pricePerWeek > 0) add("Per Minggu" to product.pricePerWeek)
-            if (product.pricePerMonth != null && product.pricePerMonth > 0) add("Per Bulan" to product.pricePerMonth)
+            product.pricePerHour?.takeIf { it > 0 }?.let { add("Per Jam" to it) }
+            product.pricePerDay?.takeIf { it > 0 }?.let { add("Per Hari" to it) }
+            product.pricePerWeek?.takeIf { it > 0 }?.let { add("Per Minggu" to it) }
+            product.pricePerMonth?.takeIf { it > 0 }?.let { add("Per Bulan" to it) }
         }
 
         // Jika ada price type yang valid, tampilkan RecyclerView
+        binding.rvProductPriceType.visibility = if (validPriceTypes.isNotEmpty()) View.VISIBLE else View.GONE
+
         if (validPriceTypes.isNotEmpty()) {
+            // Set up adapter
             productPriceTypeAdapter = ProductPriceTypeAdapter(validPriceTypes) { selectedPrice ->
+                // Simpan pilihan pengguna
+                selectedPriceType = validPriceTypes.find { it.second == selectedPrice }
                 val formattedPrice = CommonUtils.formatCurrency(selectedPrice)
                 binding.tvProductTotalPrice.text = formattedPrice
             }
@@ -182,13 +250,17 @@ class DetailProductActivity : AppCompatActivity() {
             val defaultPrice = validPriceTypes[defaultPosition].second
             binding.tvProductTotalPrice.text = CommonUtils.formatCurrency(defaultPrice)
 
-            binding.rvProductPriceType.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-            binding.rvProductPriceType.adapter = productPriceTypeAdapter
-            binding.rvProductPriceType.visibility = View.VISIBLE
+            // Simpan default price type untuk digunakan nanti
+            selectedPriceType = validPriceTypes[defaultPosition]
+
+            binding.rvProductPriceType.apply {
+                layoutManager = LinearLayoutManager(this@DetailProductActivity, LinearLayoutManager.HORIZONTAL, false)
+                adapter = productPriceTypeAdapter
+            }
         } else {
-            // Jika tidak ada price type yang valid, sembunyikan RecyclerView
-            binding.rvProductPriceType.visibility = View.GONE
+            // Jika tidak ada price type yang valid
             binding.tvProductTotalPrice.text = "Tidak tersedia"
+            binding.btnAddProduct.isEnabled = false
         }
     }
 
@@ -200,6 +272,14 @@ class DetailProductActivity : AppCompatActivity() {
             if (index != -1) return index
         }
         return 0 // Default ke item pertama jika tidak ada yang sesuai
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        // Asumsikan ada progress bar di layout dengan id progressBar
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+
+        // Disablе/enable tombol selama loading
+        binding.btnAddProduct.isEnabled = !isLoading
     }
 
 }

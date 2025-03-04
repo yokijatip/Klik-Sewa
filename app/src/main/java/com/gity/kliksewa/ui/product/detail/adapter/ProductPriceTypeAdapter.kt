@@ -1,5 +1,6 @@
 package com.gity.kliksewa.ui.product.detail.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,27 +25,43 @@ class ProductPriceTypeAdapter(
         fun bind(label: String, price: Double, position: Int) {
             tvPriceType.text = label
 
-            if (price > 0) {
-                if (position == selectedPosition) {
+            val isSelected = position == selectedPosition
+            val isEnabled = price > 0
+
+            // Atur tampilan berdasarkan status (dipilih/tidak dipilih dan aktif/nonaktif)
+            when {
+                isEnabled && isSelected -> {
                     cardPriceType.setCardBackgroundColor(ContextCompat.getColor(itemView.context, android.R.color.black))
                     tvPriceType.setTextColor(ContextCompat.getColor(itemView.context, android.R.color.white))
-                } else {
+                }
+                isEnabled && !isSelected -> {
                     cardPriceType.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.soft_gray))
                     tvPriceType.setTextColor(ContextCompat.getColor(itemView.context, R.color.dark_gray))
                 }
-
-                cardPriceType.isClickable = true
-                cardPriceType.setOnClickListener {
-                    selectedPosition = position
-                    onItemClick(price)
-                    notifyDataSetChanged() // Refresh RecyclerView untuk update background
+                !isEnabled -> {
+                    cardPriceType.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.gray))
+                    tvPriceType.setTextColor(ContextCompat.getColor(itemView.context, R.color.dark_gray))
                 }
-            } else {
-                cardPriceType.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.gray))
-                tvPriceType.setTextColor(ContextCompat.getColor(itemView.context, R.color.dark_gray))
-                cardPriceType.isClickable = false
             }
 
+            // Atur interaktivitas
+            cardPriceType.isClickable = isEnabled
+            if (isEnabled) {
+                cardPriceType.setOnClickListener {
+                    if (selectedPosition != position) {
+                        val previousSelected = selectedPosition
+                        selectedPosition = position
+
+                        // Hanya update item yang berubah untuk performa lebih baik
+                        notifyItemChanged(previousSelected)
+                        notifyItemChanged(position)
+
+                        onItemClick(price)
+                    }
+                }
+            } else {
+                cardPriceType.setOnClickListener(null)
+            }
         }
     }
 
@@ -60,8 +77,11 @@ class ProductPriceTypeAdapter(
         holder.bind(label, price, position)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setDefaultSelectedPosition(position: Int) {
-        selectedPosition = position
-        notifyDataSetChanged()
+        if (position in priceTypes.indices) {
+            selectedPosition = position
+            notifyDataSetChanged()
+        }
     }
 }

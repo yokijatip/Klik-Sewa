@@ -6,6 +6,8 @@ plugins {
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
+    // Add the Crashlytics Gradle plugin
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -115,6 +117,9 @@ dependencies {
     // Glide
     //noinspection UseTomlInstead
     implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation("com.google.firebase:firebase-crashlytics")
+    implementation("com.google.firebase:firebase-analytics")
 
 
     implementation(libs.androidx.core.ktx)

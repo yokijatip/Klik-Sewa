@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import com.gity.kliksewa.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -150,6 +151,5 @@ object CommonUtils {
         format.maximumFractionDigits = 0
         return format.format(amount)
     }
-
 
 }

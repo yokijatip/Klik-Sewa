@@ -39,7 +39,7 @@
             android:fontFamily="@font/opensans_semi_bold"
             android:maxLines="1"
             android:textColor="@color/black"
-            android:textSize="12sp"
+            android:textSize="14sp"
             tools:text="Avanza Silver New 2025" />
 
         <TextView
@@ -51,7 +51,7 @@
             android:fontFamily="@font/opensans_regular"
             android:maxLines="1"
             android:textColor="@color/dark_gray"
-            android:textSize="8sp"
+            android:textSize="12sp"
             tools:text="Bandung, Indonesia" />
 
         <View
@@ -75,7 +75,7 @@
                 android:fontFamily="@font/opensans_semi_bold"
                 android:maxLines="1"
                 android:textColor="@color/black"
-                android:textSize="11sp"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="@+id/iv_image_product_container"
                 app:layout_constraintStart_toStartOf="@+id/iv_image_product_container"
                 app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
@@ -90,7 +90,7 @@
                 android:fontFamily="@font/opensans_regular"
                 android:maxLines="1"
                 android:textColor="@color/dark_gray"
-                android:textSize="8sp"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@+id/iv_image_product_container"
                 app:layout_constraintStart_toStartOf="@+id/iv_image_product_container"
                 app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
