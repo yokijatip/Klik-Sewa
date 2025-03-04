@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gity.kliksewa.R
+import com.gity.kliksewa.data.model.CartItemModel
 import com.gity.kliksewa.databinding.ActivityCartBinding
 import com.gity.kliksewa.helper.CommonUtils
 import com.gity.kliksewa.ui.main.cart.adapter.CartAdapter
@@ -29,6 +30,7 @@ class CartActivity : AppCompatActivity() {
     private val viewModel: CartViewModel by viewModels()
     private lateinit var cartAdapter: CartAdapter
     private lateinit var userId: String
+    private val SHIPPING_FEE = 10_000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityCartBinding.inflate(layoutInflater)
@@ -91,6 +93,7 @@ class CartActivity : AppCompatActivity() {
                     is Resource.Success -> {
                         resource.data?.let { newList ->
                             cartAdapter.submitList(newList.toList()) // Buat list baru agar DiffUtil mendeteksi perubahan
+                            updateCartTotals(newList.toList())
                         }
                     }
 
@@ -109,6 +112,33 @@ class CartActivity : AppCompatActivity() {
                     else -> {}
                 }
             }
+        }
+    }
+
+    private fun updateCartTotals(cartItems: List<CartItemModel>) {
+        var subTotal = 0
+
+        // Calculate subTotal from all items
+        for (item in cartItems) {
+            subTotal += item.price.toInt() * item.quantity
+        }
+
+        // Update UI with calculated Value
+        binding.tvSubTotal.text = CommonUtils.formatCurrency(subTotal.toDouble())
+        binding.tvShippingFee.text = CommonUtils.formatCurrency(10000.0)
+
+        // Calculate total (subtotal + shipping)
+        val total = subTotal + SHIPPING_FEE
+        binding.tvTotal.text = CommonUtils.formatCurrency(total.toDouble())
+
+        // Update UI state based on cart contents
+        if (cartItems.isEmpty()) {
+
+            binding.btnCheckout.isEnabled = false
+            // Show empty cart view if you have one
+        } else {
+
+            binding.btnCheckout.isEnabled = true
         }
     }
 
@@ -143,6 +173,7 @@ class CartActivity : AppCompatActivity() {
         }
         onBackPressedDispatcher.addCallback(this, callback)
     }
+
 
     override fun finish() {
         super.finish()

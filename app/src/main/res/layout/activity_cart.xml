@@ -179,10 +179,11 @@
                 android:textColor="@color/gray" />
 
             <TextView
+                android:id="@+id/tv_shipping_fee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_medium"
-                android:text="Rp10.000"
+                tools:text="Rp10.000"
                 android:textColor="@color/dark_gray" />
 
         </LinearLayout>
@@ -202,10 +203,11 @@
                 android:textColor="@color/gray" />
 
             <TextView
+                android:id="@+id/tv_sub_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_medium"
-                android:text="Rp0"
+                tools:text="Rp0"
                 android:textColor="@color/dark_gray" />
 
         </LinearLayout>
@@ -233,10 +235,11 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/tv_total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/opensans_medium"
-                android:text="Rp0"
+                tools:text="Rp0"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
