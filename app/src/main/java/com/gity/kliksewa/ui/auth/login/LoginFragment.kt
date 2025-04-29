@@ -6,8 +6,10 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.gity.kliksewa.R
 import com.gity.kliksewa.databinding.FragmentLoginBinding
 import com.gity.kliksewa.helper.CommonUtils
 import com.gity.kliksewa.ui.auth.AuthActivity
@@ -38,6 +40,24 @@ class LoginFragment : Fragment() {
 
         setupClickListener()
         observeViewModel()
+        setupStatusBar()
+    }
+
+    private fun setupStatusBar() {
+        // Jika background login kita gelap, gunakan dark icon
+        val isDarkBackground = true // sesuaikan logika ini sesuai kebutuhan UI
+
+        activity?.window?.apply {
+            // Set warna status bar (misal dari resources)
+            statusBarColor = ContextCompat.getColor(requireContext(), R.color.black)
+
+            // Sesuaikan warna ikon status bar (hitam/putih)
+            decorView.systemUiVisibility = if (isDarkBackground) {
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR.inv()
+            } else {
+                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+        }
     }
 
     private fun setupClickListener() {
