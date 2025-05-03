@@ -18,6 +18,10 @@
         android:theme="@style/Theme.KlikSewa"
         android:hardwareAccelerated="true"
         tools:targetApi="31">
+        <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-8952348012276317~9853648136"/>
         <activity
             android:name=".ui.main.cart.CartActivity"
             android:exported="false" />
