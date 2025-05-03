@@ -5,9 +5,11 @@ import android.content.Context
 import com.cloudinary.Cloudinary
 import com.gity.kliksewa.data.repository.AuthRepositoryImpl
 import com.gity.kliksewa.data.source.remote.FirebaseAuthSource
+import com.gity.kliksewa.util.UserPreferencesManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -28,8 +30,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(firebaseAuthSource: FirebaseAuthSource): AuthRepositoryImpl {
-        return AuthRepositoryImpl(firebaseAuthSource)
+    fun provideUserPreferencesManager(
+        @ApplicationContext context: Context
+    ): UserPreferencesManager {
+        return UserPreferencesManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(firebaseAuthSource: FirebaseAuthSource,  userPreferencesManager: UserPreferencesManager): AuthRepositoryImpl {
+        return AuthRepositoryImpl(firebaseAuthSource, userPreferencesManager)
     }
 
     @Provides

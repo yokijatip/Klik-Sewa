@@ -36,10 +36,11 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/iv_account_user"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_marginBottom="4dp"
-                        android:src="@drawable/iv_user_image_yoki"
+                        android:src="@drawable/iv_image_placeholder"
                         app:civ_border_color="@color/white"
                         app:civ_border_width="1dp" />
 
@@ -51,7 +52,7 @@
                         android:layout_marginBottom="1dp"
                         android:fontFamily="@font/opensans_semi_bold"
                         android:maxLines="1"
-                        android:text="Yoki Jati Perkasa"
+                        tools:text="Yoki Jati Perkasa"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="16sp" />
@@ -63,7 +64,7 @@
                         android:layout_marginTop="1dp"
                         android:fontFamily="@font/opensans_semi_bold"
                         android:maxLines="1"
-                        android:text="Owner"
+                        tools:text="Owner"
                         android:textAlignment="center"
                         android:textColor="@color/gray"
                         android:textSize="14sp" />

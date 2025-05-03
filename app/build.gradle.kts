@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.firebase.auth.ktx)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.config.ktx)
+    implementation(libs.androidx.datastore.core.android)
     debugImplementation(libs.library)
     releaseImplementation(libs.library.no.op)
 
@@ -123,6 +124,22 @@ dependencies {
 
     // Google Admob
     implementation("com.google.android.gms:play-services-ads:24.2.0")
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.1.4")
+    implementation ("androidx.datastore:datastore-preferences-core:1.1.4")
+
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+    // ViewModel & LiveData
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+
+    // Gson
+    implementation ("com.google.code.gson:gson:2.13.1")
 
 
     implementation(libs.androidx.core.ktx)

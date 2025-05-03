@@ -5,6 +5,7 @@ package com.gity.kliksewa.ui.main.user
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.gity.kliksewa.R
 import com.gity.kliksewa.data.model.OwnerMenuModel
 import com.gity.kliksewa.data.model.SettingsMenuModel
@@ -22,6 +24,7 @@ import com.gity.kliksewa.ui.main.user.adapter.OwnerMenuAdapter
 import com.gity.kliksewa.ui.main.user.adapter.SettingsMenuAdapter
 import com.gity.kliksewa.ui.product.add.AddProductActivity
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class UserFragment : Fragment() {
@@ -47,10 +50,32 @@ class UserFragment : Fragment() {
         setupNotificationBar()
         setupRecyclerViewOwnerMenu()
         setupRecyclerViewSettingsMenu()
+        setupObservers()
     }
 
     private fun setupClickListener() {
 
+    }
+
+    private fun setupObservers() {
+        viewModel.userData.observe(viewLifecycleOwner) { user ->
+            if (user != null) {
+                binding.apply {
+                    tvNameAccount.text = user.fullName ?: "N/A"
+                    tvTypeAccount.text = user.role
+                    Timber.tag("UserFragment").d("User Data: $user")
+
+                    if (!user.profileImageUrl.isNullOrEmpty()) {
+                        Glide.with(requireContext())
+                            .load(user.profileImageUrl)
+                            .placeholder(R.drawable.iv_image_placeholder) // Make sure to add this drawable
+                            .error(R.drawable.iv_image_placeholder) // Make sure to add this drawable
+                            .circleCrop()
+                            .into(ivAccountUser)
+                    }
+                }
+            }
+        }
     }
 
     private fun logout() {
@@ -119,6 +144,7 @@ class UserFragment : Fragment() {
                 getString(R.string.add_product) -> {
                     navigateToAddProduct()
                 }
+
                 getString(R.string.storage_product) -> {
                     CommonUtils.showSnackBar(binding.root, "Clicked: ${ownerMenu.name}")
                 }

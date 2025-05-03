@@ -49,7 +49,7 @@ class LoginFragment : Fragment() {
 
         activity?.window?.apply {
             // Set warna status bar (misal dari resources)
-            statusBarColor = ContextCompat.getColor(requireContext(), R.color.black)
+            statusBarColor = ContextCompat.getColor(requireContext(), R.color.primary_color)
 
             // Sesuaikan warna ikon status bar (hitam/putih)
             decorView.systemUiVisibility = if (isDarkBackground) {
