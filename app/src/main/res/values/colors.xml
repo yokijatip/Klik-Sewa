@@ -7,6 +7,9 @@
     <color name="dark_gray">#686868</color>
     <color name="gray">#CDCDCD</color>
     <color name="primary_black">#292c31</color>
+    <color name="primary_color">#0B6275</color>
+    <color name="secondary_color">#599191</color>
+    <color name="tertiary_color">#F3713B</color>
 
     <!--  Common Color  -->
     <color name="red">#FF3830</color>

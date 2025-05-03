@@ -134,7 +134,7 @@ class HomeFragment : Fragment() {
 
     private fun setupNotificationBar() {
         // Make status bar black
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.black)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.primary_color)
 
         // Make status bar icons white using WindowCompat
         WindowCompat.getInsetsController(

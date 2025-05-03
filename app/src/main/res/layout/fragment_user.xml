@@ -17,7 +17,7 @@
             android:id="@+id/materialCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/tertiary_color"
             app:strokeWidth="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,7 +65,7 @@
                         android:maxLines="1"
                         android:text="Owner"
                         android:textAlignment="center"
-                        android:textColor="@color/dark_gray"
+                        android:textColor="@color/gray"
                         android:textSize="14sp" />
 
                 </LinearLayout>

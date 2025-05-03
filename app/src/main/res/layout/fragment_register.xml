@@ -6,7 +6,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
+        android:background="@color/primary_color"
         tools:context=".ui.auth.register.RegisterFragment">
 
         <ProgressBar
@@ -27,7 +27,7 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_marginTop="32dp"
-            android:src="@drawable/ic_align_right_box_white"
+            android:src="@drawable/ic_klik_sewa"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -197,7 +197,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="62dp"
                         android:layout_marginTop="32dp"
-                        android:backgroundTint="@color/black"
+                        android:backgroundTint="@color/primary_color"
                         android:fontFamily="@font/opensans_semi_bold"
                         android:text="@string/sign_up"
                         app:cornerRadius="16dp"

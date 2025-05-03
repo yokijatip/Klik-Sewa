@@ -153,7 +153,7 @@ class CartActivity : AppCompatActivity() {
 
     private fun setupNotificationBar() {
         // Make status bar black
-        window.statusBarColor = ContextCompat.getColor(this, R.color.black)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary_color)
 
         // Make status bar icons white using WindowCompat
         WindowCompat.getInsetsController(

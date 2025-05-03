@@ -16,7 +16,7 @@
             android:id="@+id/top_bar_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/black"
+            app:cardBackgroundColor="@color/primary_color"
             app:cardElevation="0dp"
             app:cardPreventCornerOverlap="false"
             app:layout_constraintEnd_toEndOf="parent"

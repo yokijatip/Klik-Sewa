@@ -7,7 +7,7 @@
         android:title="@string/bottom_navigation_menu_home"
         app:cnb_iconColor="@color/white"
         app:cnb_textColor="@color/white"
-        app:cnb_backgroundColor="@color/black" />
+        app:cnb_backgroundColor="@color/primary_color" />
 
     <item
         android:id="@+id/bottom_menu_inventory"
@@ -15,7 +15,7 @@
         android:title="@string/bottom_navigation_menu_explore"
         app:cnb_iconColor="@color/white"
         app:cnb_textColor="@color/white"
-        app:cnb_backgroundColor="@color/black" />
+        app:cnb_backgroundColor="@color/primary_color" />
 
     <item
         android:id="@+id/bottom_menu_history"
@@ -23,7 +23,7 @@
         android:title="@string/bottom_navigation_menu_favorite"
         app:cnb_iconColor="@color/white"
         app:cnb_textColor="@color/white"
-        app:cnb_backgroundColor="@color/black" />
+        app:cnb_backgroundColor="@color/primary_color" />
 
     <item
         android:id="@+id/bottom_menu_settings"
@@ -31,7 +31,7 @@
         android:title="@string/bottom_navigation_menu_user"
         app:cnb_iconColor="@color/white"
         app:cnb_textColor="@color/white"
-        app:cnb_backgroundColor="@color/black" />
+        app:cnb_backgroundColor="@color/primary_color" />
 
 
 </menu>
