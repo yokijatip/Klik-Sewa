@@ -79,7 +79,7 @@ class UserFragment : Fragment() {
     }
 
     private fun logout() {
-        CommonUtils.materialAlertDialog("Yakin dek Logout",
+        CommonUtils.materialAlertDialog("Apakah anda serius untuk keluar?",
             "Logout",
             requireContext(),
             onPositiveClick = {
