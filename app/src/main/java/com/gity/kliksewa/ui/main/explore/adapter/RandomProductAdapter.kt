@@ -1,5 +1,6 @@
-package com.gity.kliksewa.ui.main.home.adapter
+package com.gity.kliksewa.ui.main.explore.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -9,48 +10,49 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.gity.kliksewa.R
 import com.gity.kliksewa.data.model.ProductModel
-import com.gity.kliksewa.databinding.ListRecommendProductBinding
+import com.gity.kliksewa.databinding.ListExploreProductBinding
 import com.gity.kliksewa.helper.CommonUtils
 import timber.log.Timber
 
-class RecommendedProductAdapter(
+class RandomProductAdapter(
     private val onItemClickListener: (ProductModel) -> Unit
-) : ListAdapter<ProductModel, RecommendedProductAdapter.RecommendedProductViewHolder>(
-    RecommendedProductDiffUtils()
+) : ListAdapter<ProductModel, RandomProductAdapter.RandomProductViewHolder>(
+    RandomProductDiffUtils()
 ) {
-
-
     override fun onCreateViewHolder(
-        parent: ViewGroup, viewType: Int
-    ): RecommendedProductAdapter.RecommendedProductViewHolder {
-        val binding = ListRecommendProductBinding.inflate(
+        parent: ViewGroup,
+        viewType: Int
+    ): RandomProductAdapter.RandomProductViewHolder {
+        val binding = ListExploreProductBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        return RecommendedProductViewHolder(binding)
+        return RandomProductViewHolder(binding)
     }
 
     override fun onBindViewHolder(
-        holder: RecommendedProductAdapter.RecommendedProductViewHolder, position: Int
+        holder: RandomProductAdapter.RandomProductViewHolder,
+        position: Int
     ) {
         holder.bind(getItem(position))
     }
 
-    inner class RecommendedProductViewHolder(private val binding: ListRecommendProductBinding) :
+    inner class RandomProductViewHolder(private val binding: ListExploreProductBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+        @SuppressLint("CheckResult")
         fun bind(product: ProductModel) {
-            // Load gambar produk menggunakan Glide
             binding.apply {
+                // Isi tampilan dengan data produk
 
                 Glide.with(root.context)
                     .load(product.images[0])
                     .placeholder(R.drawable.iv_image_placeholder)
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(ivImageProduct)
-                // Log URL gambar untuk debugging
-                Timber.tag("RecommendedProductAdapter").d("Loading image URL: ${product.images[0]}")
 
-                // Set harga produk berdasarkan prioritas
+                // Log URL gambar untuk debugging
+                Timber.tag("RandomProductAdapter").d("Loading image URL: ${product.images[0]}")
+
+                // set harga Produk berdasarkan prioritas
                 val formattedPrice = CommonUtils.getFormattedPrice(
                     product.pricePerHour,
                     product.pricePerDay,
@@ -64,17 +66,12 @@ class RecommendedProductAdapter(
                 root.setOnClickListener {
                     onItemClickListener(product)
                 }
-
             }
-
-
         }
-
     }
 }
 
-// DiffUtil untuk membandingkan daftar produk
-class RecommendedProductDiffUtils : DiffUtil.ItemCallback<ProductModel>() {
+class RandomProductDiffUtils : DiffUtil.ItemCallback<ProductModel>() {
     override fun areItemsTheSame(oldItem: ProductModel, newItem: ProductModel): Boolean {
         return oldItem.id == newItem.id
     }
@@ -82,4 +79,5 @@ class RecommendedProductDiffUtils : DiffUtil.ItemCallback<ProductModel>() {
     override fun areContentsTheSame(oldItem: ProductModel, newItem: ProductModel): Boolean {
         return oldItem == newItem
     }
+
 }

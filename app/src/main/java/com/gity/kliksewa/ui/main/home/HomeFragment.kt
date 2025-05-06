@@ -2,7 +2,6 @@ package com.gity.kliksewa.ui.main.home
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,14 +15,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.interfaces.ItemClickListener
 import com.denzcoskun.imageslider.models.SlideModel
 import com.gity.kliksewa.R
 import com.gity.kliksewa.data.model.BannerModel
 import com.gity.kliksewa.data.model.ProductCategoryModel
-import com.gity.kliksewa.data.model.ProductModel
 import com.gity.kliksewa.databinding.FragmentHomeBinding
 import com.gity.kliksewa.helper.CommonUtils
 import com.gity.kliksewa.ui.main.cart.CartActivity
@@ -131,10 +128,10 @@ class HomeFragment : Fragment() {
     }
 
 
-
     private fun setupNotificationBar() {
         // Make status bar black
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.primary_color)
+        activity?.window?.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.primary_color)
 
         // Make status bar icons white using WindowCompat
         WindowCompat.getInsetsController(
@@ -172,7 +169,8 @@ class HomeFragment : Fragment() {
         categoryAdapter = ProductCategoryAdapter()
 
         binding.rvCategoryProduct.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = categoryAdapter
             setHasFixedSize(true)
         }

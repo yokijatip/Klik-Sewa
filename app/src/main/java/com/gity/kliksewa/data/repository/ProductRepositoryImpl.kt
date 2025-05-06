@@ -62,6 +62,21 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getRandomProducts(): List<ProductModel> = withContext(Dispatchers.IO) {
+        try {
+            // Ambil data produk dari Firestore
+            val querySnapshot = firestore.collection("products")
+                .get()
+                .await()
+
+            // Konversi hasil query ke daftar ProductModel
+            querySnapshot.toObjects(ProductModel::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
     override suspend fun getProductById(productId: String): ProductModel {
         return try {
             // Ambil data produk berdasarkan ID dari Firestore
