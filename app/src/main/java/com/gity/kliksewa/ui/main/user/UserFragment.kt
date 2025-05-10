@@ -22,6 +22,7 @@ import com.gity.kliksewa.databinding.FragmentUserBinding
 import com.gity.kliksewa.helper.CommonUtils
 import com.gity.kliksewa.ui.main.user.adapter.OwnerMenuAdapter
 import com.gity.kliksewa.ui.main.user.adapter.SettingsMenuAdapter
+import com.gity.kliksewa.ui.main.user.address.AddressActivity
 import com.gity.kliksewa.ui.product.add.AddProductActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -203,9 +204,18 @@ class UserFragment : Fragment() {
                 getString(R.string.change_password) -> {
                     CommonUtils.showSnackBar(binding.root, "Clicked: ${it.name}")
                 }
+
+                getString(R.string.address) -> {
+                    navigateToAddress()
+                }
             }
 
         }
+    }
+
+    private fun navigateToAddress() {
+        val intent = Intent(requireContext(), AddressActivity::class.java)
+        startActivity(intent)
     }
 
     private fun navigateToAddProduct() {

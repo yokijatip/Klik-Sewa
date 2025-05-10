@@ -26,7 +26,8 @@ class CartRepositoryImpl @Inject constructor(
 
     override suspend fun getCartItems(userId: String): Resource<List<CartItemModel>> = withContext(Dispatchers.IO) {
         try {
-            val cartItems = firestore.collection("users")
+            val cartItems = firestore
+                .collection("users")
                 .document(userId)
                 .collection("cart")
                 .get()

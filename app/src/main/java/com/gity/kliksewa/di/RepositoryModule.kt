@@ -2,10 +2,12 @@ package com.gity.kliksewa.di
 
 import android.content.Context
 import com.cloudinary.Cloudinary
+import com.gity.kliksewa.data.repository.AddressRepositoryImpl
 import com.gity.kliksewa.data.repository.BannerRepositoryImpl
 import com.gity.kliksewa.data.repository.CartRepositoryImpl
 import com.gity.kliksewa.data.repository.ProductRepositoryImpl
 import com.gity.kliksewa.data.source.remote.BannerRemoteSource
+import com.gity.kliksewa.domain.repository.AddressRepository
 import com.gity.kliksewa.domain.repository.BannerRepository
 import com.gity.kliksewa.domain.repository.CartRepository
 import com.gity.kliksewa.domain.repository.ProductRepository
@@ -44,4 +46,13 @@ object RepositoryModule {
     ): CartRepository {
         return CartRepositoryImpl(firestore)
     }
+
+    @Provides
+    @Singleton
+    fun provideAddressRepository(
+        firestore: FirebaseFirestore
+    ): AddressRepository {
+        return AddressRepositoryImpl(firestore)
+    }
+
 }

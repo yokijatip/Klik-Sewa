@@ -85,8 +85,12 @@
     <string name="change_password">Change Password</string>
     <string name="logout">Logout</string>
     <string name="about">About</string>
+    <string name="address">Address</string>
+    <string name="choose_address">Choose Address</string>
+    <string name="edit">Edit</string>
 
     <string-array name="settings_menu_text">
+        <item>@string/address</item>
         <item>@string/notification</item>
         <item>@string/change_password</item>
         <item>@string/about</item>
@@ -94,6 +98,7 @@
     </string-array>
 
     <string-array name="settings_menu_image">
+        <item>@drawable/ic_map_pin</item>
         <item>@drawable/ic_bell</item>
         <item>@drawable/ic_lock</item>
         <item>@drawable/ic_warning_circle</item>
@@ -154,6 +159,7 @@
     <string name="sub_total">Sub Total</string>
     <string name="total">Total</string>
     <string name="checkout">Checkout</string>
+
 
 
 </resources>
