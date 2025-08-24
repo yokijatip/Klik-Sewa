@@ -10,6 +10,7 @@
     <color name="primary_color">#0B6275</color>
     <color name="secondary_color">#599191</color>
     <color name="tertiary_color">#F3713B</color>
+    <color name="primary_light">#FFE3F2FD</color>
 
     <!--  Common Color  -->
     <color name="red">#FF3830</color>
