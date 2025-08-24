@@ -1,5 +1,6 @@
 package com.gity.kliksewa.ui.product.add
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -67,6 +68,10 @@ class AddProductActivity : AppCompatActivity() {
         binding.apply {
             btnBack.setOnClickListener {
                 handleBackButton()
+            }
+
+            btnGetPriceRecommendation.setOnClickListener {
+                navigateToGetPriceRecommendation()
             }
 
             ivProductImage1.setOnClickListener {
@@ -241,6 +246,12 @@ class AddProductActivity : AppCompatActivity() {
     private fun handleBackButton() {
         // Tampilkan konfirmasi keluar
         showExitConfirmationDialog()
+    }
+
+    private fun navigateToGetPriceRecommendation() {
+        // Navigasi ke GetPriceRecommendationActivity
+        val intent = Intent(this, PriceRecommendationActivity::class.java)
+        startActivity(intent)
     }
 
     private fun showExitConfirmationDialog() {
