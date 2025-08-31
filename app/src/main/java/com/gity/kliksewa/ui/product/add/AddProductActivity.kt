@@ -34,6 +34,22 @@ class AddProductActivity : AppCompatActivity() {
     private val imageUris = mutableListOf<String>()
     private val imageViews = mutableListOf<ImageView>()
 
+    private val cityDistrictMap = mapOf(
+        "Bandung" to listOf("Ujungberung", "Coblong", "Sukajadi", "Arcamanik", "Kiaracondong", "Sumur Bandung", "Antapani", "Lengkong", "Cicendo"),
+        "Bekasi" to listOf("Bekasi Selatan", "Medan Satria", "Bekasi Barat", "Bekasi Timur"),
+        "Bogor" to listOf("Tanah Sareal", "Bogor Tengah", "Bogor Barat", "Bogor Timur"),
+        "Cimahi" to listOf("Cimahi Utara", "Cimahi Selatan", "Cimahi Tengah"),
+        "Depok" to listOf("Pancoran Mas", "Beji", "Sukmajaya", "Cimanggis"),
+        "Jakarta" to listOf("Cilandak", "Tanjung Priok", "Kuningan", "Tebet", "Cempaka Putih", "Gambir", "Kebayoran Baru", "Grogol Petamburan", "Menteng")
+    )
+
+    private val subCategoryMap = mapOf(
+        "Barang" to listOf("Elektronik", "Camping", "Catering"),
+        "Kendaraan" to listOf("Motor", "Mobil", "Truk"),
+        "Properti" to listOf("Ruko", "Ruang Rapat")
+    )
+
+
     private val pickImageLauncher =
         registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
             if (uris.isNotEmpty()) {
@@ -60,6 +76,9 @@ class AddProductActivity : AppCompatActivity() {
         }
         setupBackButtonHandling()
         setupCategoryDropdown()
+        setupCityDropdown()
+        setupConditionDropdown()
+        setupTypeDropdown()
         setupImageViews()
         setupClickListener()
     }
@@ -93,14 +112,13 @@ class AddProductActivity : AppCompatActivity() {
             }
 
             btnDeleteImage.setOnClickListener {
-                CommonUtils.materialAlertDialog(
-                    "Apakah anda yakin ingin menghapus Gambar?",
+                CommonUtils.materialAlertDialog("Apakah anda yakin ingin menghapus Gambar?",
                     "Hapus Gambar",
-                    this@AddProductActivity, onPositiveClick = {
+                    this@AddProductActivity,
+                    onPositiveClick = {
                         imageUris.clear()
                         updateImagePreviews()
-                    }
-                )
+                    })
             }
 
             btnAddProduct.setOnClickListener {
@@ -108,6 +126,10 @@ class AddProductActivity : AppCompatActivity() {
                 val productDescription = edtProductDescription.text.toString()
                 val productAddress = edtProductAddress.text.toString()
                 val productCategory = dropdownProductCategory.text.toString()
+                val productCondition = dropdownProductCondition.text.toString()
+                val productType = dropdownProductType.text.toString()
+                println("Product Condition: $productCondition")
+                println("Product Type: $productType")
                 Timber.tag("AddProduct").e("Category: $productCategory")
                 val productUnitPrice = edtProductUnitPrice.text.toString()
                 val productPricePerHour = edtProductPricePerHour.text.toString()
@@ -193,6 +215,63 @@ class AddProductActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun setupCityDropdown() {
+        val cities = cityDistrictMap.keys.toList()
+        val adapter = ArrayAdapter(this, R.layout.list_item_dropdown, cities)
+        binding.dropdownProductCity.setAdapter(adapter)
+
+        // Default: district tidak aktif dulu
+        binding.dropdownProductDistrict.isEnabled = false
+
+        binding.dropdownProductCity.setOnItemClickListener { _, _, position, _ ->
+            val selectedCity = cities[position]
+            binding.dropdownProductCity.setText(selectedCity, false)
+
+            val districts = cityDistrictMap[selectedCity] ?: emptyList()
+            val districtAdapter = ArrayAdapter(this, R.layout.list_item_dropdown, districts)
+            binding.dropdownProductDistrict.setAdapter(districtAdapter)
+
+            binding.dropdownProductDistrict.setText("", false) // clear selection
+            binding.dropdownProductDistrict.isEnabled = true
+        }
+    }
+
+    private fun setupConditionDropdown() {
+        val conditions = listOf("baru", "bagus", "layak_pakai", "normal")
+        val adapter = ArrayAdapter(this, R.layout.list_item_dropdown, conditions)
+        binding.dropdownProductCondition.setAdapter(adapter)
+    }
+
+    private fun setupTypeDropdown() {
+        val types = listOf("unit", "set", "slot/hari")
+        val adapter = ArrayAdapter(this, R.layout.list_item_dropdown, types)
+        binding.dropdownProductType.setAdapter(adapter)
+    }
+
+
+    private fun setupCategoryDropdown() {
+        val categories = subCategoryMap.keys.toList()
+        val adapter = ArrayAdapter(this, R.layout.list_item_dropdown, categories)
+        binding.dropdownProductCategory.setAdapter(adapter)
+
+        // Default: subcategory tidak aktif dulu
+        binding.dropdownProductSubcategory.isEnabled = false
+
+        binding.dropdownProductCategory.setOnItemClickListener { _, _, position, _ ->
+            val selectedCategory = categories[position]
+            binding.dropdownProductCategory.setText(selectedCategory, false)
+
+            val subCategories = subCategoryMap[selectedCategory] ?: emptyList()
+            val subAdapter = ArrayAdapter(this, R.layout.list_item_dropdown, subCategories)
+            binding.dropdownProductSubcategory.setAdapter(subAdapter)
+
+            binding.dropdownProductSubcategory.setText("", false)
+            binding.dropdownProductSubcategory.isEnabled = true
+        }
+    }
+
+
 
     private fun setupImageViews() {
         binding.apply {
@@ -346,12 +425,9 @@ class AddProductActivity : AppCompatActivity() {
         imageViews.forEachIndexed { index, imageView ->
             if (index < imageUris.size) {
                 // Load selected image
-                Glide.with(this)
-                    .load(Uri.parse(imageUris[index]))
-                    .centerCrop()
+                Glide.with(this).load(Uri.parse(imageUris[index])).centerCrop()
                     .placeholder(R.drawable.ic_media_image_plus)
-                    .error(R.drawable.ic_media_image_plus)
-                    .into(imageView)
+                    .error(R.drawable.ic_media_image_plus).into(imageView)
             } else {
                 // Reset to placeholder for empty slots
                 imageView.setImageResource(R.drawable.ic_media_image_plus)
@@ -367,28 +443,6 @@ class AddProductActivity : AppCompatActivity() {
                 imageUris.removeAt(imageIndex)
                 updateImagePreviews()
             })
-    }
-
-    private fun setupCategoryDropdown() {
-        val categoryProduct =
-            listOf("Vehicle", "Camera", "Electronic", "Other", "Building", "Clothes", "Hobbies")
-        val adapter = ArrayAdapter(
-            this@AddProductActivity, R.layout.list_item_dropdown, categoryProduct
-        ).apply {
-            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        }
-
-        (binding.dropdownProductCategory as? AutoCompleteTextView)?.apply {
-            setAdapter(adapter)
-            threshold = 1
-            inputType = 0  // Disable keyboard input
-            keyListener = null  // Prevent manual text input
-        }
-
-        binding.dropdownProductCategory.setOnItemClickListener { _, _, position, _ ->
-            binding.dropdownProductCategory.setText(categoryProduct[position], false)
-        }
-
     }
 
     private fun setupBackButtonHandling() {

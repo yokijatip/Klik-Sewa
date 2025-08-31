@@ -35,26 +35,41 @@
     <string name="search">Search</string>
     <string name="recommend_for_you">Recommended For You</string>
 
+    <!-- _________________________________Add Product Start______________________________________ -->
+
     <!-- Category Product Text -->
-    <string name="car">Car</string>
-    <string name="camera">Camera</string>
-    <string name="electronic">Electronic</string>
-    <string name="other">Other</string>
-    <string name="building">Building</string>
-    <string name="clothes">Clothes</string>
-    <string name="hobbies">Hobbies</string>
+    <string name="products">Products</string>
+    <string name="vehicle">Vehicle</string>
+    <string name="property">Property</string>
 
     <string-array name="category_product_text">
-        <item>@string/car</item>
-        <item>@string/camera</item>
-        <item>@string/electronic</item>
-        <item>@string/other</item>
-        <item>@string/building</item>
-        <item>@string/clothes</item>
-        <item>@string/hobbies</item>
+        <item>@string/products</item>
+        <item>@string/vehicle</item>
+        <item>@string/property</item>
     </string-array>
 
-    <!--  Category Product Image  -->
+    <!-- SubCategory Product Text -->
+    <string name="shophouse">Shophouse</string>
+    <string name="catering">Catering</string>
+    <string name="camping">Camping</string>
+    <string name="electronic">ELectronic</string>
+    <string name="motorcycle">Motorcycle</string>
+    <string name="car">Car</string>
+    <string name="truck">Truck</string>
+    <string name="meeting_room">Meeting Room</string>
+
+    <string-array name="subcategory_product_text">
+        <item>@string/shophouse</item>
+        <item>@string/catering</item>
+        <item>@string/camping</item>
+        <item>@string/electronic</item>
+        <item>@string/motorcycle</item>
+        <item>@string/car</item>
+        <item>@string/truck</item>
+        <item>@string/meeting_room</item>
+    </string-array>
+
+    <!--  Category Product  -->
     <string-array name="category_product_image">
         <item>@drawable/ic_car</item>
         <item>@drawable/ic_camera</item>
@@ -64,6 +79,8 @@
         <item>@drawable/ic_shirt</item>
         <item>@drawable/ic_people_tag</item>
     </string-array>
+
+    <!-- _________________________________Add Product Finish______________________________________ -->
 
     <string name="storage_product">Product\nStorage</string>
     <string name="add_product">Add\nProduct</string>
@@ -111,6 +128,7 @@
     <string name="product_description">Description</string>
     <string name="product_address">Address</string>
     <string name="product_categories">Categories</string>
+    <string name="product_subcategory">Sub Category</string>
     <string name="product_images">Images</string>
     <string name="product_unit_price">Unit Price</string>
     <string name="product_price_per_hour">Price Per Hour</string>
@@ -122,6 +140,12 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
+    <!-- Add Product -->
+    <string name="condition">Condition</string>
+
+    <string name="unit">Unit</string>
+
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris

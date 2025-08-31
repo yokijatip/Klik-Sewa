@@ -141,6 +141,9 @@ dependencies {
     // Gson
     implementation ("com.google.code.gson:gson:2.13.1")
 
+    // Retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

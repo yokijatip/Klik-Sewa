@@ -180,6 +180,62 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Product Condition Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dropdown_product_condition_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:hint="Condition">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_product_condition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:background="@null"
+                android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Product Type Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dropdown_product_type_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:hint="Type">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_product_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:background="@null"
+                android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/opensans_semi_bold"
+            android:text="Product Address"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
         <!-- Product Address -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/edt_product_address_layout"
@@ -188,7 +244,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             app:startIconDrawable="@drawable/ic_map_pin"
-            android:layout_marginTop="16dp"
             android:hint="@string/product_address"
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
@@ -206,13 +261,67 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- City Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dropdown_product_city_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:hint="Pilih Kota">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_product_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:inputType="none"
+                android:focusable="false"
+                android:clickable="true"
+                android:background="@null"
+                android:maxLines="1"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- District Dropdown -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dropdown_product_district_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:hint="Pilih District">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_product_district"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:background="@null"
+                android:clickable="true"
+                android:focusable="false"
+                android:inputType="none"
+                android:maxLines="1" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/opensans_semi_bold"
+            android:text="Product Category"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/dropdown_product_category_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
             android:hint="@string/product_categories"
             app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
@@ -224,9 +333,36 @@
                 android:id="@+id/dropdown_product_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@null"
+                android:clickable="true"
+                android:paddingStart="16dp"
+                android:focusable="false"
+                android:inputType="none"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dropdown_product_subcategory_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:hint="@string/product_subcategory"
+            app:boxCornerRadiusBottomEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusTopStart="12dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdown_product_subcategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:inputType="none"
                 android:focusable="false"
                 android:clickable="true"
+                android:paddingStart="16dp"
                 android:background="@null"
                 android:maxLines="1"/>
 
@@ -247,7 +383,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
