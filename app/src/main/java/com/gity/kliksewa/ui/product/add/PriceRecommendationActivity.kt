@@ -218,6 +218,7 @@ class PriceRecommendationActivity : AppCompatActivity() {
             val resultIntent = Intent().apply {
                 putExtra(AddProductActivity.RESULT_PRICE_ACCEPTED, true)
                 putExtra(AddProductActivity.RECOMMENDED_PRICE, recommendation.recommendedPriceDaily)
+                Timber.tag("PriceRecommendation").d("Accepted recommendation, returning result to AddProductActivity : ${recommendation.recommendedPriceDaily}")
             }
             setResult(Activity.RESULT_OK, resultIntent)
             finish()

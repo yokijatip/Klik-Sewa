@@ -21,7 +21,7 @@ object MLModule {
     @Named("ml_base_url")
     fun provideMLBaseUrl(): String {
         // Ganti dengan URL ML API Anda
-        return "https://your-ml-api-url.com/"
+        return "http://10.135.43.163:8000/"
     }
 
     @Provides

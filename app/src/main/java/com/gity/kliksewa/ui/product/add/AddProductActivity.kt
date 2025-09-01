@@ -104,7 +104,12 @@ class AddProductActivity : AppCompatActivity() {
 
             if (isPriceAccepted && recommendedPrice > 0) {
                 // Set the recommended price to pricePerDay field
-                binding.edtProductPricePerDay.setText(recommendedPrice.toString())
+                val formattedPrice = if (recommendedPrice == recommendedPrice.toLong().toDouble()) {
+                    recommendedPrice.toLong().toString()  // Hilangkan .0 jika bilangan bulat
+                } else {
+                    recommendedPrice.toString()  // Biarkan desimal jika ada
+                }
+                binding.edtProductPricePerDay.setText(formattedPrice)
                 CommonUtils.showSnackBar(binding.root, "Harga rekomendasi berhasil diterapkan")
                 Timber.tag("AddProduct").d("Applied recommended price: $recommendedPrice")
             }
@@ -376,7 +381,7 @@ class AddProductActivity : AppCompatActivity() {
                 }
 
             // Navigasi ke GetPriceRecommendationActivity
-            startActivity(intent)
+            priceRecommendationLauncher.launch(intent)
         }
     }
 
@@ -473,31 +478,6 @@ class AddProductActivity : AppCompatActivity() {
             onPositiveClick = {
                 finish()
             })
-    }
-
-    private fun observerAddProductState() {
-        lifecycleScope.launch {
-            viewModel.addProductState.collect { state ->
-                when (state) {
-                    is Resource.Loading -> {
-                        // Tampilkan loading jika diperlukan
-                        Timber.tag("AddProduct").e("Loading adding product")
-                    }
-
-                    is Resource.Success -> {
-                        CommonUtils.showSnackBar(binding.root, "Produk berhasil ditambahkan")
-                        Timber.tag("AddProduct").e("Product added successfully")
-                        finish()
-                    }
-
-                    is Resource.Error -> {
-                        CommonUtils.showSnackBar(binding.root, state.message ?: "Terjadi kesalahan")
-                        Timber.tag("AddProduct").e("Error adding product: %s", state.message)
-                    }
-                }
-            }
-        }
-
     }
 
     private fun validateInput(
