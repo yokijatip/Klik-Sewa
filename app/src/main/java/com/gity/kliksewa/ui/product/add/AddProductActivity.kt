@@ -1,16 +1,20 @@
 package com.gity.kliksewa.ui.product.add
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -29,18 +33,44 @@ import java.util.UUID
 @AndroidEntryPoint
 class AddProductActivity : AppCompatActivity() {
 
+    companion object {
+        const val REQUEST_PRICE_RECOMMENDATION = 1001
+        const val RESULT_PRICE_ACCEPTED = "price_accepted"
+        const val RECOMMENDED_PRICE = "recommended_price"
+    }
+
     private lateinit var binding: ActivityAddProductBinding
     private val viewModel: AddProductViewModel by viewModels()
     private val imageUris = mutableListOf<String>()
     private val imageViews = mutableListOf<ImageView>()
 
     private val cityDistrictMap = mapOf(
-        "Bandung" to listOf("Ujungberung", "Coblong", "Sukajadi", "Arcamanik", "Kiaracondong", "Sumur Bandung", "Antapani", "Lengkong", "Cicendo"),
+        "Bandung" to listOf(
+            "Ujungberung",
+            "Coblong",
+            "Sukajadi",
+            "Arcamanik",
+            "Kiaracondong",
+            "Sumur Bandung",
+            "Antapani",
+            "Lengkong",
+            "Cicendo"
+        ),
         "Bekasi" to listOf("Bekasi Selatan", "Medan Satria", "Bekasi Barat", "Bekasi Timur"),
         "Bogor" to listOf("Tanah Sareal", "Bogor Tengah", "Bogor Barat", "Bogor Timur"),
         "Cimahi" to listOf("Cimahi Utara", "Cimahi Selatan", "Cimahi Tengah"),
         "Depok" to listOf("Pancoran Mas", "Beji", "Sukmajaya", "Cimanggis"),
-        "Jakarta" to listOf("Cilandak", "Tanjung Priok", "Kuningan", "Tebet", "Cempaka Putih", "Gambir", "Kebayoran Baru", "Grogol Petamburan", "Menteng")
+        "Jakarta" to listOf(
+            "Cilandak",
+            "Tanjung Priok",
+            "Kuningan",
+            "Tebet",
+            "Cempaka Putih",
+            "Gambir",
+            "Kebayoran Baru",
+            "Grogol Petamburan",
+            "Menteng"
+        )
     )
 
     private val subCategoryMap = mapOf(
@@ -64,6 +94,23 @@ class AddProductActivity : AppCompatActivity() {
             }
         }
 
+    private val priceRecommendationLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val isPriceAccepted = data?.getBooleanExtra(RESULT_PRICE_ACCEPTED, false) ?: false
+            val recommendedPrice = data?.getDoubleExtra(RECOMMENDED_PRICE, 0.0) ?: 0.0
+
+            if (isPriceAccepted && recommendedPrice > 0) {
+                // Set the recommended price to pricePerDay field
+                binding.edtProductPricePerDay.setText(recommendedPrice.toString())
+                CommonUtils.showSnackBar(binding.root, "Harga rekomendasi berhasil diterapkan")
+                Timber.tag("AddProduct").d("Applied recommended price: $recommendedPrice")
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityAddProductBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -80,7 +127,91 @@ class AddProductActivity : AppCompatActivity() {
         setupConditionDropdown()
         setupTypeDropdown()
         setupImageViews()
+        setupFieldValidation()
         setupClickListener()
+        observeViewModel()
+    }
+
+    private fun setupFieldValidation() {
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+            override fun afterTextChanged(s: Editable?) {
+                validateRecommendationButton()
+            }
+        }
+
+        binding.apply {
+            edtProductName.addTextChangedListener(textWatcher)
+            dropdownProductCategory.addTextChangedListener(textWatcher)
+            dropdownProductSubcategory.addTextChangedListener(textWatcher)
+            dropdownProductCondition.addTextChangedListener(textWatcher)
+            dropdownProductType.addTextChangedListener(textWatcher)
+            dropdownProductCity.addTextChangedListener(textWatcher)
+            dropdownProductDistrict.addTextChangedListener(textWatcher)
+        }
+        // Initial validation
+        validateRecommendationButton()
+    }
+
+    private fun validateRecommendationButton() {
+        binding.apply {
+            val category = dropdownProductCategory.text.toString()
+            val subcategory = dropdownProductSubcategory.text.toString()
+            val name = edtProductName.text.toString()
+            val city = dropdownProductCity.text.toString()
+            val district = dropdownProductDistrict.text.toString()
+            val condition = dropdownProductCondition.text.toString()
+            val type = dropdownProductType.text.toString()
+
+            val isValid = viewModel.validateRecommendationFields(
+                category, subcategory, name, city, district, condition, type
+            )
+
+            btnGetPriceRecommendation.isEnabled = isValid
+
+            if (isValid) {
+                btnGetPriceRecommendation.backgroundTintList =
+                    ContextCompat.getColorStateList(this@AddProductActivity, R.color.primary_color)
+                btnGetPriceRecommendation.alpha = 1.0f
+            } else {
+                btnGetPriceRecommendation.backgroundTintList =
+                    ContextCompat.getColorStateList(this@AddProductActivity, R.color.gray)
+                btnGetPriceRecommendation.alpha = 0.6f
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun observeViewModel() {
+        lifecycleScope.launch {
+            viewModel.addProductState.collect { state ->
+                when (state) {
+                    is Resource.Loading -> {
+                        binding.btnAddProduct.text = "Menambahkan..."
+                        binding.btnAddProduct.isEnabled = false
+                        Timber.tag("AddProduct").e("Loading adding product")
+                    }
+
+                    is Resource.Success -> {
+                        CommonUtils.showSnackBar(binding.root, "Produk berhasil ditambahkan")
+                        binding.btnAddProduct.text = "Add Product"
+                        binding.btnAddProduct.isEnabled = true
+                        Timber.tag("AddProduct").e("Product added successfully")
+                        finish()
+                    }
+
+                    is Resource.Error -> {
+                        CommonUtils.showSnackBar(binding.root, state.message ?: "Terjadi kesalahan")
+                        binding.btnAddProduct.text = "Add Product"
+                        binding.btnAddProduct.isEnabled = true
+                        Timber.tag("AddProduct").e("Error adding product: %s", state.message)
+                    }
+                }
+            }
+        }
     }
 
     private fun setupClickListener() {
@@ -211,7 +342,6 @@ class AddProductActivity : AppCompatActivity() {
                                 ?.toDouble() ?: 0.0,
                             images = imageUris.map { it })
                         viewModel.addProduct(product)
-                        observerAddProductState()
                         Timber.tag("AddProduct").e("Product added successfully")
                     } catch (e: Exception) {
                         CommonUtils.showMessages(e.message.toString(), this@AddProductActivity)
@@ -229,6 +359,24 @@ class AddProductActivity : AppCompatActivity() {
                 }
                 true
             }
+        }
+    }
+
+    private fun navigateToGetPriceRecommendation() {
+        binding.apply {
+            val intent =
+                Intent(this@AddProductActivity, PriceRecommendationActivity::class.java).apply {
+                    putExtra("category", dropdownProductCategory.text.toString())
+                    putExtra("subcategory", dropdownProductSubcategory.text.toString())
+                    putExtra("name", edtProductName.text.toString())
+                    putExtra("city", dropdownProductCity.text.toString())
+                    putExtra("district", dropdownProductDistrict.text.toString())
+                    putExtra("condition", dropdownProductCondition.text.toString())
+                    putExtra("type", dropdownProductType.text.toString())
+                }
+
+            // Navigasi ke GetPriceRecommendationActivity
+            startActivity(intent)
         }
     }
 
@@ -250,6 +398,7 @@ class AddProductActivity : AppCompatActivity() {
 
             binding.dropdownProductDistrict.setText("", false) // clear selection
             binding.dropdownProductDistrict.isEnabled = true
+            validateRecommendationButton()
         }
     }
 
@@ -284,10 +433,9 @@ class AddProductActivity : AppCompatActivity() {
 
             binding.dropdownProductSubcategory.setText("", false)
             binding.dropdownProductSubcategory.isEnabled = true
+            validateRecommendationButton()
         }
     }
-
-
 
     private fun setupImageViews() {
         binding.apply {
@@ -313,6 +461,20 @@ class AddProductActivity : AppCompatActivity() {
         }
     }
 
+    private fun handleBackButton() {
+        // Tampilkan konfirmasi keluar
+        showExitConfirmationDialog()
+    }
+
+    private fun showExitConfirmationDialog() {
+        CommonUtils.materialAlertDialog("Are you sure want to exit from add product Screen",
+            "Cancel Add Product ?",
+            this@AddProductActivity,
+            onPositiveClick = {
+                finish()
+            })
+    }
+
     private fun observerAddProductState() {
         lifecycleScope.launch {
             viewModel.addProductState.collect { state ->
@@ -336,26 +498,6 @@ class AddProductActivity : AppCompatActivity() {
             }
         }
 
-    }
-
-    private fun handleBackButton() {
-        // Tampilkan konfirmasi keluar
-        showExitConfirmationDialog()
-    }
-
-    private fun navigateToGetPriceRecommendation() {
-        // Navigasi ke GetPriceRecommendationActivity
-        val intent = Intent(this, PriceRecommendationActivity::class.java)
-        startActivity(intent)
-    }
-
-    private fun showExitConfirmationDialog() {
-        CommonUtils.materialAlertDialog("Are you sure want to exit from add product Screen",
-            "Cancel Add Product ?",
-            this@AddProductActivity,
-            onPositiveClick = {
-                finish()
-            })
     }
 
     private fun validateInput(

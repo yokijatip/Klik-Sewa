@@ -97,6 +97,7 @@ object CommonUtils {
         title: String,
         context: Context,
         onPositiveClick: () -> Unit,
+        onNegativeClick: (() -> Unit)? = null // optional
     ) {
         MaterialAlertDialogBuilder(context, R.style.CustomAlertDialogTheme)
             .setTitle(title)
