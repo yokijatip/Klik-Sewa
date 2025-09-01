@@ -102,7 +102,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:fontFamily="@font/opensans_bold"
-                            android:text="Rp 185.000"
+                            android:text="-"
                             android:textColor="@color/primary_color"
                             android:textSize="28sp" />
 
@@ -166,7 +166,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_semi_bold"
-                            android:text="Rp 160k - 210k"
+                            android:text="-"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -193,7 +193,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_semi_bold"
-                            android:text="Rp 178.000"
+                            android:text="-"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -220,7 +220,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_semi_bold"
-                            android:text="Above Average"
+                            android:text="-"
                             android:textColor="@color/green"
                             android:textSize="14sp" />
 
@@ -275,7 +275,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_semi_bold"
-                            android:text="Random Forest"
+                            android:text="-"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 
@@ -302,7 +302,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_semi_bold"
-                            android:text="92.3%"
+                            android:text="-"
                             android:textColor="@color/green"
                             android:textSize="14sp" />
 
@@ -329,7 +329,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_semi_bold"
-                            android:text="87.5%"
+                            android:text="-"
                             android:textColor="@color/green"
                             android:textSize="14sp" />
 
@@ -356,7 +356,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/opensans_semi_bold"
-                            android:text="15,847"
+                            android:text="-"
                             android:textColor="@color/black"
                             android:textSize="14sp" />
 

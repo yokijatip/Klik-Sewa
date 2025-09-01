@@ -128,8 +128,9 @@ class AddProductActivity : AppCompatActivity() {
                 val productCategory = dropdownProductCategory.text.toString()
                 val productCondition = dropdownProductCondition.text.toString()
                 val productType = dropdownProductType.text.toString()
-                println("Product Condition: $productCondition")
-                println("Product Type: $productType")
+                val productCity = dropdownProductCity.text.toString()
+                val productDistrict = dropdownProductDistrict.text.toString()
+                val productSubcategory = dropdownProductSubcategory.text.toString()
                 Timber.tag("AddProduct").e("Category: $productCategory")
                 val productUnitPrice = edtProductUnitPrice.text.toString()
                 val productPricePerHour = edtProductPricePerHour.text.toString()
@@ -141,6 +142,11 @@ class AddProductActivity : AppCompatActivity() {
                 println("Product Name: $productName")
                 println("Product Description: $productDescription")
                 println("Product Address: $productAddress")
+                println("Product Condition: $productCondition")
+                println("Product Type: $productType")
+                println("Product City: $productCity")
+                println("Product District: $productDistrict")
+                println("Product Subcategory: $productSubcategory")
                 println("Product Category: $productCategory")
                 println("Product Unit Price: $productUnitPrice")
                 println("Product Price Per Hour: $productPricePerHour")
@@ -152,8 +158,13 @@ class AddProductActivity : AppCompatActivity() {
                 if (validateInput(
                         productName,
                         productDescription,
+                        productCondition,
+                        productType,
                         productAddress,
+                        productCity,
+                        productDistrict,
                         productCategory,
+                        productSubcategory,
                         productUnitPrice,
                         productPricePerHour,
                         productPricePerDay,
@@ -182,8 +193,13 @@ class AddProductActivity : AppCompatActivity() {
                             ownerId = FirebaseAuth.getInstance().currentUser?.uid.orEmpty(),
                             name = productName,
                             description = productDescription,
+                            condition = productCondition,
+                            type = productType,
                             address = productAddress,
+                            city = productCity,
+                            district = productDistrict,
                             category = productCategory,
+                            subCategory = productSubcategory,
                             unitPrice = productUnitPrice.toDouble(),
                             pricePerHour = productPricePerHour.takeIf { it.isNotEmpty() }
                                 ?.toDouble() ?: 0.0,
@@ -345,8 +361,13 @@ class AddProductActivity : AppCompatActivity() {
     private fun validateInput(
         productName: String,
         productDescription: String,
+        productCondition: String,
+        productType: String,
         productAddress: String,
+        productCity: String,
+        productDistrict: String,
         productCategory: String,
+        productSubCategory: String,
         productUnitPrice: String,
         productPricePerHour: String,
         productPricePerDay: String,
@@ -366,15 +387,45 @@ class AddProductActivity : AppCompatActivity() {
                 false
             }
 
+            productCondition.isEmpty() -> {
+                CommonUtils.showSnackBar(binding.root, "Kondisi produk harus diisi")
+                Timber.tag("AddProduct").e("Product condition is empty")
+                false
+            }
+
+            productType.isEmpty() -> {
+                CommonUtils.showSnackBar(binding.root, "Tipe produk harus diisi")
+                Timber.tag("AddProduct").e("Product type is empty")
+                false
+            }
+
             productAddress.isEmpty() -> {
                 CommonUtils.showSnackBar(binding.root, "Alamat produk harus diisi")
                 Timber.tag("AddProduct").e("Product address is empty")
                 false
             }
 
+            productCity.isEmpty() -> {
+                CommonUtils.showSnackBar(binding.root, "Kota produk harus diisi")
+                Timber.tag("AddProduct").e("Product city is empty")
+                false
+            }
+
+            productDistrict.isEmpty() -> {
+                CommonUtils.showSnackBar(binding.root, "Kecamatan produk harus diisi")
+                Timber.tag("AddProduct").e("Product district is empty")
+                false
+            }
+
             productCategory.isEmpty() -> {
                 CommonUtils.showSnackBar(binding.root, "Kategori produk harus diisi")
                 Timber.tag("AddProduct").e("Product category is empty")
+                false
+            }
+
+            productSubCategory.isEmpty() -> {
+                CommonUtils.showSnackBar(binding.root, "Sub-kategori produk harus diisi")
+                Timber.tag("AddProduct").e("Product sub-category is empty")
                 false
             }
 
