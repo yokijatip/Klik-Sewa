@@ -3,10 +3,10 @@ package com.gity.kliksewa.ui.product.detail
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -16,6 +16,8 @@ import com.denzcoskun.imageslider.models.SlideModel
 import com.gity.kliksewa.R
 import com.gity.kliksewa.data.model.CartItemModel
 import com.gity.kliksewa.data.model.ProductModel
+import com.gity.kliksewa.data.model.ml.PriceAnalysisRequest
+import com.gity.kliksewa.data.model.ml.PriceAnalysisResponse
 import com.gity.kliksewa.databinding.ActivityDetailProductBinding
 import com.gity.kliksewa.helper.CommonUtils
 import com.gity.kliksewa.ui.product.detail.adapter.ProductPriceTypeAdapter
@@ -60,8 +62,9 @@ class DetailProductActivity : AppCompatActivity() {
         setupFavoriteButton()
         observeProductDetails()
         observeAddToCartResult()
+        observePriceAnalysis() // Tambahkan ini
 
-//        Muat Detail Produk
+        // Muat Detail Produk
         showLoading(true)
         viewModel.getProductDetails(productId)
     }
@@ -76,7 +79,6 @@ class DetailProductActivity : AppCompatActivity() {
             }
         }
     }
-
 
     private fun addToCartProduct() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -121,18 +123,154 @@ class DetailProductActivity : AppCompatActivity() {
             when (resource) {
                 is Resource.Error -> {
                     Timber.tag("DetailProductActivity").e("Error: ${resource.message}")
-                    CommonUtils.showSnackBar(binding.root, "Gagal memuat produk: ${resource.message}")
+                    CommonUtils.showSnackBar(
+                        binding.root,
+                        "Gagal memuat produk: ${resource.message}"
+                    )
                 }
+
                 is Resource.Loading -> {
                     // Loading state handled by showLoading()
                 }
+
                 is Resource.Success -> {
                     resource.data?.let {
                         currentProduct = it
                         displayProductDetails(it)
+                        // Trigger price analysis setelah product details dimuat
+                        analyzePricing(it)
                     }
                 }
+
                 else -> {}
+            }
+        }
+    }
+
+    // Tambahkan method untuk menganalisis harga
+    private fun analyzePricing(product: ProductModel) {
+        // Gunakan selected price atau default price (per hari)
+        val currentPrice = selectedPriceType?.second ?: product.pricePerDay ?: 0.0
+
+        if (currentPrice > 0) {
+            val request = PriceAnalysisRequest(
+                category = product.category,
+                subcategory = product.subCategory,
+                name = product.name,
+                city = product.city,
+                district = product.district,
+                condition = product.condition,
+                type = product.type,
+                current_price = currentPrice
+            )
+
+            viewModel.analyzePricing(request)
+        }
+    }
+
+    // Tambahkan observer untuk price analysis
+    private fun observePriceAnalysis() {
+        lifecycleScope.launch {
+            viewModel.priceAnalysisResult.collect { resource ->
+                when (resource) {
+                    is Resource.Success -> {
+                        resource.data?.let { analysisResponse ->
+                            displayPriceAnalysis(analysisResponse)
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        Timber.tag("DetailProductActivity")
+                            .e("Price analysis error: ${resource.message}")
+                        // Hide price analysis card if error
+                        binding.cardPriceAnalysis.visibility = View.GONE
+                    }
+
+                    is Resource.Loading -> {
+                        // Show loading indicator di price analysis card jika diperlukan
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    // Tambahkan method untuk menampilkan hasil price analysis
+    @SuppressLint("SetTextI18n")
+    private fun displayPriceAnalysis(analysisResponse: PriceAnalysisResponse) {
+        binding.apply {
+            cardPriceAnalysis.visibility = View.VISIBLE
+
+            val priceAnalysis = analysisResponse.priceAnalysis
+
+            // Set status berdasarkan recommendation status
+            when (analysisResponse.recommendationStatus.lowercase()) {
+                "below recommendation" -> {
+                    ivPriceStatus.setImageResource(R.drawable.ic_arrow_down)
+                    ivPriceStatus.setColorFilter(
+                        ContextCompat.getColor(
+                            this@DetailProductActivity,
+                            R.color.green
+                        )
+                    )
+                    tvPriceStatus.text = "Great Price!"
+                    tvPriceStatus.setTextColor(
+                        ContextCompat.getColor(
+                            this@DetailProductActivity,
+                            R.color.green
+                        )
+                    )
+                }
+
+                "above recommendation" -> {
+                    ivPriceStatus.setImageResource(R.drawable.ic_arrow_up)
+                    ivPriceStatus.setColorFilter(
+                        ContextCompat.getColor(
+                            this@DetailProductActivity,
+                            R.color.red
+                        )
+                    )
+                    tvPriceStatus.text = "Above Market"
+                    tvPriceStatus.setTextColor(
+                        ContextCompat.getColor(
+                            this@DetailProductActivity,
+                            R.color.red
+                        )
+                    )
+                }
+
+                else -> {
+                    ivPriceStatus.setImageResource(R.drawable.ic_check_circle)
+                    ivPriceStatus.setColorFilter(
+                        ContextCompat.getColor(
+                            this@DetailProductActivity,
+                            R.color.green
+                        )
+                    )
+                    tvPriceStatus.text = "Reasonable Price"
+                    tvPriceStatus.setTextColor(
+                        ContextCompat.getColor(
+                            this@DetailProductActivity,
+                            R.color.green
+                        )
+                    )
+                }
+            }
+
+            // Set market range dari recommended price (estimasi range ±20%)
+            val recommendedPrice = analysisResponse.recommendedPrice
+            val minPrice = recommendedPrice * 0.8
+            val maxPrice = recommendedPrice * 1.2
+            tvMarketRange.text =
+                "${CommonUtils.formatCurrency(minPrice)} - ${CommonUtils.formatCurrency(maxPrice)}"
+
+            // Set savings information
+            val priceDifferencePercent = kotlin.math.abs(priceAnalysis.priceDifferencePercent)
+            tvSavingsAmount.text = when {
+                priceAnalysis.priceDifference < 0 -> "Save ${priceDifferencePercent.toInt()}%"
+                priceAnalysis.priceDifference > 0 -> "Above market by ${priceDifferencePercent.toInt()}%"
+                else -> "Average"
             }
         }
     }
@@ -149,15 +287,18 @@ class DetailProductActivity : AppCompatActivity() {
                             "Produk berhasil ditambahkan ke keranjang"
                         )
                     }
+
                     is Resource.Error -> {
                         CommonUtils.showSnackBar(
                             binding.root,
                             "Gagal menambahkan produk: ${resource.message}"
                         )
                     }
+
                     is Resource.Loading -> {
                         // Loading state handled by showLoading()
                     }
+
                     else -> {}
                 }
             }
@@ -206,18 +347,18 @@ class DetailProductActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-        // Animasi saat kembali ke HomeFragment
-        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun setupBackButtonHandling() {
-        // Menggunakan OnBackPressedCallback untuk menangani tombol back
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finish()
-            }
-        }
-        onBackPressedDispatcher.addCallback(this, callback)
+        // Hapus OnBackPressedCallback yang kompleks dan gunakan override onBackPressed
+        // Tidak perlu OnBackPressedCallback jika tidak ada logika khusus
+    }
+
+    @Deprecated("This method has been deprecated in favor of using the\n      {@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}.\n      The OnBackPressedDispatcher controls how back button events are dispatched\n      to one or more {@link OnBackPressedCallback} objects.")
+    override fun onBackPressed() {
+        // Override method onBackPressed langsung
+        super.onBackPressed()
+        finish()
     }
 
     @SuppressLint("SetTextI18n")
@@ -231,7 +372,8 @@ class DetailProductActivity : AppCompatActivity() {
         }
 
         // Jika ada price type yang valid, tampilkan RecyclerView
-        binding.rvProductPriceType.visibility = if (validPriceTypes.isNotEmpty()) View.VISIBLE else View.GONE
+        binding.rvProductPriceType.visibility =
+            if (validPriceTypes.isNotEmpty()) View.VISIBLE else View.GONE
 
         if (validPriceTypes.isNotEmpty()) {
             // Set up adapter
@@ -240,6 +382,11 @@ class DetailProductActivity : AppCompatActivity() {
                 selectedPriceType = validPriceTypes.find { it.second == selectedPrice }
                 val formattedPrice = CommonUtils.formatCurrency(selectedPrice)
                 binding.tvProductTotalPrice.text = formattedPrice
+
+                // Re-analyze pricing dengan harga yang dipilih
+                currentProduct?.let { product ->
+                    analyzePricing(product)
+                }
             }
 
             // Set default selected position
@@ -254,7 +401,11 @@ class DetailProductActivity : AppCompatActivity() {
             selectedPriceType = validPriceTypes[defaultPosition]
 
             binding.rvProductPriceType.apply {
-                layoutManager = LinearLayoutManager(this@DetailProductActivity, LinearLayoutManager.HORIZONTAL, false)
+                layoutManager = LinearLayoutManager(
+                    this@DetailProductActivity,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                )
                 adapter = productPriceTypeAdapter
             }
         } else {
@@ -278,8 +429,7 @@ class DetailProductActivity : AppCompatActivity() {
         // Asumsikan ada progress bar di layout dengan id progressBar
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
 
-        // Disablе/enable tombol selama loading
+        // Disable/enable tombol selama loading
         binding.btnAddProduct.isEnabled = !isLoading
     }
-
 }
