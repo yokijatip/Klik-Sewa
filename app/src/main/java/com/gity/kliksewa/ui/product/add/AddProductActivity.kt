@@ -140,26 +140,84 @@ class AddProductActivity : AppCompatActivity() {
     private fun setupFieldValidation() {
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
             override fun afterTextChanged(s: Editable?) {
                 validateRecommendationButton()
+                validateAddProductButton() // Tambahkan ini
             }
         }
 
         binding.apply {
             edtProductName.addTextChangedListener(textWatcher)
+            edtProductDescription.addTextChangedListener(textWatcher) // Tambahkan ini
+            edtProductAddress.addTextChangedListener(textWatcher) // Tambahkan ini
             dropdownProductCategory.addTextChangedListener(textWatcher)
             dropdownProductSubcategory.addTextChangedListener(textWatcher)
             dropdownProductCondition.addTextChangedListener(textWatcher)
             dropdownProductType.addTextChangedListener(textWatcher)
             dropdownProductCity.addTextChangedListener(textWatcher)
             dropdownProductDistrict.addTextChangedListener(textWatcher)
+            edtProductUnitPrice.addTextChangedListener(textWatcher) // Tambahkan ini
+            edtProductPricePerHour.addTextChangedListener(textWatcher) // Tambahkan ini
+            edtProductPricePerDay.addTextChangedListener(textWatcher) // Tambahkan ini
+            edtProductPricePerWeek.addTextChangedListener(textWatcher) // Tambahkan ini
+            edtProductPricePerMonth.addTextChangedListener(textWatcher) // Tambahkan ini
         }
+
         // Initial validation
         validateRecommendationButton()
+        validateAddProductButton() // Tambahkan ini
     }
+
+    private fun validateAddProductButton() {
+        binding.apply {
+            val productName = edtProductName.text.toString()
+            val productDescription = edtProductDescription.text.toString()
+            val productCondition = dropdownProductCondition.text.toString()
+            val productType = dropdownProductType.text.toString()
+            val productAddress = edtProductAddress.text.toString()
+            val productCity = dropdownProductCity.text.toString()
+            val productDistrict = dropdownProductDistrict.text.toString()
+            val productCategory = dropdownProductCategory.text.toString()
+            val productSubcategory = dropdownProductSubcategory.text.toString()
+            val productUnitPrice = edtProductUnitPrice.text.toString()
+            val productPricePerHour = edtProductPricePerHour.text.toString()
+            val productPricePerDay = edtProductPricePerDay.text.toString()
+            val productPricePerWeek = edtProductPricePerWeek.text.toString()
+            val productPricePerMonth = edtProductPricePerMonth.text.toString()
+
+            // Validasi semua field required
+            val isValid = validateInput(
+                productName,
+                productDescription,
+                productCondition,
+                productType,
+                productAddress,
+                productCity,
+                productDistrict,
+                productCategory,
+                productSubcategory,
+                productUnitPrice,
+                productPricePerHour,
+                productPricePerDay,
+                productPricePerWeek,
+                productPricePerMonth
+            ) && validateImages()
+
+            btnAddProduct.isEnabled = isValid
+
+            if (isValid) {
+                btnAddProduct.backgroundTintList =
+                    ContextCompat.getColorStateList(this@AddProductActivity, R.color.black)
+                btnAddProduct.alpha = 1.0f
+            } else {
+                btnAddProduct.backgroundTintList =
+                    ContextCompat.getColorStateList(this@AddProductActivity, R.color.gray)
+                btnAddProduct.alpha = 0.6f
+            }
+        }
+    }
+
 
     private fun validateRecommendationButton() {
         binding.apply {
@@ -404,6 +462,7 @@ class AddProductActivity : AppCompatActivity() {
             binding.dropdownProductDistrict.setText("", false) // clear selection
             binding.dropdownProductDistrict.isEnabled = true
             validateRecommendationButton()
+            validateAddProductButton()
         }
     }
 
@@ -439,6 +498,7 @@ class AddProductActivity : AppCompatActivity() {
             binding.dropdownProductSubcategory.setText("", false)
             binding.dropdownProductSubcategory.isEnabled = true
             validateRecommendationButton()
+            validateAddProductButton()
         }
     }
 
