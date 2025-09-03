@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Klik Sewa</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--  Auth -->
@@ -34,8 +33,6 @@
     <!--  Home Fragment  -->
     <string name="search">Search</string>
     <string name="recommend_for_you">Recommended For You</string>
-
-    <!-- _________________________________Add Product Start______________________________________ -->
 
     <!-- Category Product Text -->
     <string name="products">Products</string>
@@ -79,8 +76,6 @@
         <item>@drawable/ic_shirt</item>
         <item>@drawable/ic_people_tag</item>
     </string-array>
-
-    <!-- _________________________________Add Product Finish______________________________________ -->
 
     <string name="storage_product">Product\nStorage</string>
     <string name="add_product">Add\nProduct</string>

@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.gity.kliksewa"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.gity.kliksewa"
