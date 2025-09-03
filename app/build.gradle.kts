@@ -57,8 +57,6 @@ dependencies {
     implementation(libs.firebase.config.ktx)
     implementation(libs.androidx.datastore.core.android)
     implementation(libs.identity.jvm)
-    debugImplementation(libs.library)
-    releaseImplementation(libs.library.no.op)
 
     // ViewModel, LiveData & Runtime Database Local Room
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
