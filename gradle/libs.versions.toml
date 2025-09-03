@@ -1,6 +1,8 @@
 [versions]
-agp = "8.5.2"
+agp = "8.7.3"
 kotlin = "2.1.0"
+ksp = "2.2.0-2.0.2"
+hilt = "2.51.1"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -62,4 +64,6 @@ identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 

@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp")
     id("kotlin-parcelize")
-    id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
     id("com.google.gms.google-services")
     // Add the Crashlytics Gradle plugin
@@ -12,7 +11,7 @@ plugins {
 
 android {
     namespace = "com.gity.kliksewa"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.gity.kliksewa"
@@ -38,13 +37,18 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "11"
     }
     viewBinding {
         enable = true
     }
     buildFeatures {
         viewBinding = true
+    }
+    packaging {
+        resources {
+            pickFirsts += ("/META-INF/versions/9/OSGI-INF/MANIFEST.MF")
+        }
     }
 }
 
@@ -68,7 +72,7 @@ dependencies {
     //noinspection UseTomlInstead
     implementation("com.google.dagger:hilt-android:2.51.1")
     //noinspection UseTomlInstead
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
 
     // Coil untuk loading gambar
     //noinspection UseTomlInstead
@@ -156,9 +160,4 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
 }
