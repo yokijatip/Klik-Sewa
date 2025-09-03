@@ -148,8 +148,7 @@
 
 
     <string name="lorem_ipsum">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
     </string>
 
     <!-- Detail Product -->
@@ -178,6 +177,4 @@
     <string name="sub_total">Sub Total</string>
     <string name="total">Total</string>
     <string name="checkout">Checkout</string>
-
-
 </resources>

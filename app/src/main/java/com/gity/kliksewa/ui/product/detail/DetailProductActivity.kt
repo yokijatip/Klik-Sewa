@@ -62,7 +62,7 @@ class DetailProductActivity : AppCompatActivity() {
         setupFavoriteButton()
         observeProductDetails()
         observeAddToCartResult()
-        observePriceAnalysis() // Tambahkan ini
+        observePriceAnalysis()
 
         // Muat Detail Produk
         showLoading(true)
@@ -168,7 +168,6 @@ class DetailProductActivity : AppCompatActivity() {
         }
     }
 
-    // Tambahkan observer untuk price analysis
     private fun observePriceAnalysis() {
         lifecycleScope.launch {
             viewModel.priceAnalysisResult.collect { resource ->
@@ -187,9 +186,7 @@ class DetailProductActivity : AppCompatActivity() {
                     }
 
                     is Resource.Loading -> {
-                        // Show loading indicator di price analysis card jika diperlukan
                     }
-
                     else -> {}
                 }
             }
