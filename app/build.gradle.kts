@@ -71,7 +71,6 @@ dependencies {
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.androidx.room.runtime)
     ksp(libs.room.compiler)
-    // TAMBAHKAN ROOM KTX
     implementation("androidx.room:room-ktx:2.6.1")
 
     // Coil untuk loading gambar
@@ -129,9 +128,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-
-    // Gson
-    implementation("com.google.code.gson:gson:2.13.1")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
