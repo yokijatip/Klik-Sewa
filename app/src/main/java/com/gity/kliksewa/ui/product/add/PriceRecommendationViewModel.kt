@@ -50,7 +50,7 @@ class PriceRecommendationViewModel @Inject constructor(
                         Timber.tag("PriceRecommendationViewModel").d("Error getting price recommendation: ${result.message}")
                     }
                     is Resource.Loading -> {
-                        Timber.tag("PriceRecommendationViewModel").d("Loading price recommendation........😎")
+                        Timber.tag("PriceRecommendationViewModel").d("Loading price recommendation........")
                     }
                     is Resource.Success -> {
                         Timber.tag("PriceRecommendationViewModel").d("Price recommendation retrieved successfully: ${result.data?.recommendedPriceDaily}")

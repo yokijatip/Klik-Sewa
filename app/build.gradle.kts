@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.config.ktx)
     implementation(libs.androidx.datastore.core.android)
+    implementation(libs.identity.jvm)
     debugImplementation(libs.library)
     releaseImplementation(libs.library.no.op)
 
@@ -144,6 +145,9 @@ dependencies {
     // Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    implementation ("com.midtrans:uikit:2.3.0-SANDBOX")
+    implementation ("com.midtrans:uikit:2.3.0")
 
 
     implementation(libs.androidx.core.ktx)
